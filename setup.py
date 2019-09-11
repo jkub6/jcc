@@ -8,7 +8,8 @@ This file is a part of Jake's C Compiler (JCC)
 import sys
 from cx_Freeze import setup, Executable
 
-build_exe_options = {"packages": ["os"], "excludes": ["tkinter"]}
+build_exe_options = {"packages": ["os"], "excludes": ["tkinter"],
+                     "optimize": 2}
 
 
 exe_options = Executable(

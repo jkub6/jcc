@@ -12,11 +12,6 @@ def test_func_fast():
     """Simple pass test."""
 
 
-@pytest.mark.slow
-def test_func_slow():
-    """Slow function test. Should be skipped if only testing fast."""
-
-
 def test_addition():
     """Test basic addition."""
     if 1 + 1 != 2:

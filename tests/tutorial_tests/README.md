@@ -1,21 +1,26 @@
-# Write a C Compiler!
+# Write a C Compiler
 
 This is a set of C test programs to help you write your own compiler. They were written to accompany [this tutorial](https://norasandler.com/2017/11/29/Write-a-Compiler.html).
 
 ## Usage
 
 ### test all
-```
+
+```shell
 ./test_compiler.sh /path/to/your/compiler
 ```
 
 ### test specific stages
+
 To test stage 1 and stage 3,
-```
+
+```shell
 ./test_compiler.sh /path/to/your/compiler 1 3
 ```
+
 To test from stage 1 to stage 6,
-```
+
+```shell
 ./test_compiler.sh /path/to/your/compiler `seq 1 6`
 ```
 
