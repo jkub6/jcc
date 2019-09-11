@@ -1,7 +1,0 @@
-[
-  "tests/test_pytest.py::test_func_fast",
-  "tests/test_pytest.py::test_func_slow",
-  "tests/test_pytest.py::test_addition",
-  "tests/test_pytest.py::test_assert",
-  "tests/test_pytest.py::test_exception"
-]

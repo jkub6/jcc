@@ -12,7 +12,7 @@ build_exe_options = {"packages": ["os"], "excludes": ["tkinter"]}
 
 
 exe_options = Executable(
-                        script="jcc.py",
+                        script="jcc/jcc.py",
                         targetName="jcc.exe",
                         base=None
                         )
