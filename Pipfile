@@ -10,6 +10,7 @@ autopep8 = "*"
 pep8 = "*"
 pytest = "==5.0.1"
 cx-freeze = "*"
+pyinstaller = "*"
 
 [packages]
 
