@@ -37,7 +37,7 @@ here is a block quote:
 > the end
 
 image:
-![Test image should be here](/images/test_image.png)
+![Test image should be here](https://homepages.cae.wisc.edu/~ece533/images/airplane.png)
 
 ordered list:
 
