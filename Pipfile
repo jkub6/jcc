@@ -1,0 +1,17 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pylint = "*"
+pydocstyle = "*"
+autopep8 = "*"
+pep8 = "*"
+pytest = "==5.0.1"
+cx-freeze = "*"
+
+[packages]
+
+[requires]
+python_version = "3.7"
