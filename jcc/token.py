@@ -119,7 +119,6 @@ for token in token_patterns:  # Compile patterns
 def tokenize(source):
     """Return given source as a list of tokens."""
     tokens = []
-
     words = source.split()
 
     for raw_word in words:
@@ -128,8 +127,8 @@ def tokenize(source):
             continue
 
         while word != "":
-            for type in token_patterns:
-                match = token_patterns[type].match(word)
+            for type, pattern in token_patterns.items():
+                match = pattern.match(word)
                 if match:
                     tokens.append(Token(type, word[:match.end()]))
                     word = word[match.end():]

@@ -1,6 +1,13 @@
 # JCC - Jake's C Compiler
 
-yay!
+## Currently implemented syntax
+
+```properties
+<program> ::= <function>
+<function> ::= "int" <id> "(" ")" "{" <statement> "}"
+<statement> ::= "return" <exp> ";"
+<exp> ::= <int>
+```
 
 ## Testing markdown syntax starts here
 
