@@ -13,6 +13,7 @@ cx-freeze = "*"
 pyinstaller = "*"
 
 [packages]
+pycparser = "*"
 
 [requires]
 python_version = "3.7"

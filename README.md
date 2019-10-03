@@ -1,6 +1,23 @@
 # JCC - Jake's C Compiler
 
-## Currently implemented syntax
+## Reference Documents
+
+<https://norasandler.com/2017/11/29/Write-a-Compiler.html>
+<http://scheme2006.cs.uchicago.edu/11-ghuloum.pdf>
+<http://www.wilfred.me.uk/blog/2014/08/27/baby-steps-to-a-c-compiler/>
+<http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf>
+<http://effbot.org/zone/simple-top-down-parsing.htm#summary>
+<https://dl.acm.org/citation.cfm?doid=512927.512931>
+
+## Progress
+
+### TODO
+
+* strings, comments, and line numbers in tokenizer
+* Parser
+* Generator
+
+### Currently Implemented Syntax (almost)
 
 ```properties
 <program> ::= <function>
@@ -8,6 +25,17 @@
 <statement> ::= "return" <exp> ";"
 <exp> ::= <int>
 ```
+
+### Statements to be implemented
+
+1. expression statements
+2. compound statements
+3. selection statements
+4. iteration statements
+5. jump statements
+6. declaration statements
+7. try blocks
+8. atomic and synchronized blocks (TM TS)
 
 ## Testing markdown syntax starts here
 
@@ -33,7 +61,7 @@ def foo(blah):
 
 * [x] task2
 * [ ] task3
-* [ ] task 4 assigned to @Ryguy924
+* [ ] task 4 assigned to @jkub6
 * [x] task5
 
 This should be some `inline_code()` right here.

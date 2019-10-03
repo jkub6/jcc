@@ -3,14 +3,15 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-#Visual studio  code config folder
-.vscode/
+# Visual studio  code config folder
+#.vscode/
+.vscode/settings.json
 
-#cx_Freeze build folder
+# cx_Freeze build folder
 build/
 
-#pyinstaller build folder
+# pyinstaller build folder
 dist/
 
-#Pytest cache
+# Pytest cache
 .pytest_cache/

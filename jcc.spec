@@ -3,8 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['jcc\\jcc.py'],
-             pathex=['C:\\Users\\jkub6\\OneDrive\\Documents\\dev\\repos\\jcc'],
+a = Analysis(['main.py'],
              binaries=[],
              datas=[],
              hiddenimports=[],
