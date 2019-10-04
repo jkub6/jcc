@@ -8,7 +8,6 @@ This file is a part of Jake's C Compiler (JCC)
 import pytest
 
 
-@pytest.mark.order1
 def test_import():
     """Test import."""
     import jcc.parser

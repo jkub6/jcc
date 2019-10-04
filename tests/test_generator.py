@@ -7,8 +7,10 @@ This file is a part of Jake's C Compiler (JCC)
 
 import pytest
 
+import tests.premade
 
-@pytest.mark.order1
-def test_import():
-    """Test import."""
-    import jcc.generator
+
+def test_premade_stage_1_valid():
+    """Test a whole bunch of premade C/assembly file pairs."""
+    for pair in tests.premade.load_files(1, True):
+        print(pair[0])
