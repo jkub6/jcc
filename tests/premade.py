@@ -15,9 +15,11 @@ class FileGroup:
         """Override default constructor."""
         self.c_filepath = ""
         self.assembly_filepath = ""
+        self.clean_filepath = ""
         self.binary_filepath = ""
         self.c_data = ""
         self.assembly_data = ""
+        self.clean_data = ""
         self.binary_data = ""
 
 
@@ -36,10 +38,22 @@ def load_files(stage_num, valid):
                 fg.c_filepath = os.path.join(path, filename)
                 fg.assembly_filepath = os.path.join(path, filename[:-2]+".s")
                 fg.binary_filepath = os.path.join(path, filename[:-2]+".dat")
+                fg.clean_filepath = os.path.join(path,
+                                                 filename[:-2]+"_clean.s")
                 fg.c_data = open(fg.c_filepath, "r").read()
-                fg.assembly_data = "None"
-                fg.binary_data = "None"
-                # fg.assembly_data = open(fg.assembly_filepath, "r").read()
-                # fg.binary_data = open(fg.binary_filepath, "r").read()
+
+                try:
+                    fg.assembly_data = open(fg.assembly_filepath, "r").read()
+                except:
+                    fg.assembly_data = "Error loading file"
+                try:
+                    fg.clean_data = open(fg.clean_filepath, "r").read()
+                except:
+                    fg.clean_data = "Error loading file"
+                try:
+                    fg.binary_data = open(fg.binary_filepath, "r").read()
+                except:
+                    fg.binary_data = "Error loading file"
+
                 file_groups.append(fg)
     return file_groups

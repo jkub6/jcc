@@ -1,6 +1,6 @@
     JUMP main
 main:
-        XOR %RA, %RA
-        ADDI 0, %RA
-        JUMP .end
+    XOR %RA, %RA
+    ADDI 100, %RA
+    JUMP .end
 .end:

@@ -1,0 +1,4 @@
+JUMP 0x2
+XOR %RA, %RA
+ADDI 2, %RA
+JUMP 0x8
