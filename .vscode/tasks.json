@@ -10,12 +10,14 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "problemMatcher": []
         },
         {
             "label": "Build with pyinstaller",
             "type": "shell",
             "command": "pipenv run pyinstaller --onefile jcc.spec",
+            "problemMatcher": []
         }
     ]
 }

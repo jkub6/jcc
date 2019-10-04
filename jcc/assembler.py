@@ -36,6 +36,28 @@ command_binary_table_baseline = {
     }
 
 
-def assemble(ast):
+def assemble(assembly_data):
     """Create binary code from assembly."""
-    return "Not Implemented"
+    labels = {}
+
+    # initial pass for label locations
+    count = 0
+    asssembly_data_no_labels = ""
+    for line in assembly_data.split("\n"):
+        # if is a label
+        if line == "":
+            continue
+        if not line.startswith("\t") and line.split(";")[0][-1] == ":":
+            label = line.split(";")[0][:-1]
+            if label in labels:
+                raise Exception("duplicate label")
+            labels[label] = hex(2*count)
+        else:
+            count += 1  # only increase count if not label
+            asssembly_data_no_labels += line[1:] + "\n"
+
+    # for label in labels:
+    #    asssembly_data_no_labels =
+    #         asssembly_data_no_labels.replace(label, labels[label])
+
+    return asssembly_data_no_labels

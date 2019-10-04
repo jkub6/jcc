@@ -51,7 +51,7 @@ def parse_args():
 
 def read_file(filename):
     """Read data from file."""
-    vprint("[reading input file \"{0}\"".format(filename))
+    vprint("[reading input file \"{0}\"]".format(filename))
     try:
         file = open(filename, "r")
         data = file.read()

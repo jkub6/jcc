@@ -18,8 +18,13 @@ int a(){return 2;}
     """
     ast = jcc.flow.parse_c_code(c_data, "examples/pycparser/c_files/simple.c")
     ast.show()
+    print("\n\n")
     assembly_data = jcc.flow.generate_assembly_code(ast)
 
     print(assembly_data)
+    print("\n\n")
+    binary_data = jcc.flow.generate_binary_code(assembly_data)
+
+    print(binary_data)
     # assembly_data = jcc.jcc.generate_assembly_code(ast)
     # jcc.binary_data = jcc.jcc.generate_binary_code(assembly_data)
