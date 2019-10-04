@@ -1,6 +1,14 @@
 """
-Contains tests to see if the ast maker is working correctly.
+Contains tests for jcc.
 
 This file is a part of Jake's C Compiler (JCC)
 (c) Copyright 2019 Jacob Larkin
 """
+
+import pytest
+
+
+@pytest.mark.order1
+def test_import():
+    """Test import."""
+    import jcc
