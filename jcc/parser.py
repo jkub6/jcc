@@ -6,6 +6,7 @@ This file is a part of Jake's C Compiler (JCC)
 """
 
 import pycparser
+from pycparser import c_generator
 
 
 class ParseError(Exception):

@@ -48,11 +48,11 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def instr(self, i):
         """Add instruction."""
-        self.assembly_data += "\t" + i + "\n"
+        self.assembly_data += "    " + i + "\n"
 
     def comment(self, c):
         """Add instruction."""
-        self.assembly_data += "\t; " + c + "\n"
+        self.assembly_data += "    ; " + c + "\n"
 
 
 def generate(ast):

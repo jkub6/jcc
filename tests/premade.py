@@ -8,9 +8,22 @@ This file is a part of Jake's C Compiler (JCC)
 import os
 
 
+class FileGroup:
+    """Represent a set of matching C code, assembly, and binary data."""
+
+    def __init__(self):
+        """Override default constructor."""
+        self.c_filepath = ""
+        self.assembly_filepath = ""
+        self.binary_filepath = ""
+        self.c_data = ""
+        self.assembly_data = ""
+        self.binary_data = ""
+
+
 def load_files(stage_num, valid):
     """Load all files for a given stage number."""
-    c_assembly_pairs = []
+    file_groups = []
     if valid:
         path = "./tests/premade/stage_{0}/valid".format(stage_num)
     else:
@@ -19,13 +32,14 @@ def load_files(stage_num, valid):
     for filename in filenames:
         if os.path.isfile(os.path.join(path, filename)):
             if filename.endswith(".c"):
-                c_filepath = os.path.join(path, filename)
-                assembly_filepath = os.path.join(path, filename[:-2]+".s")
-                binary_filepath = os.path.join(path, filename[:-2]+".dat")
-                c_data = open(c_filepath, "r").read()
-                assembly_data = "None"
-                binary_data = "None"
-                # assembly_data = open(assembly_filepath, "r").read()
-                # binary_data = open(binary_filepath, "r").read()
-                c_assembly_pairs.append((c_data, assembly_data, binary_data))
-    return c_assembly_pairs
+                fg = FileGroup()
+                fg.c_filepath = os.path.join(path, filename)
+                fg.assembly_filepath = os.path.join(path, filename[:-2]+".s")
+                fg.binary_filepath = os.path.join(path, filename[:-2]+".dat")
+                fg.c_data = open(fg.c_filepath, "r").read()
+                fg.assembly_data = "None"
+                fg.binary_data = "None"
+                # fg.assembly_data = open(fg.assembly_filepath, "r").read()
+                # fg.binary_data = open(fg.binary_filepath, "r").read()
+                file_groups.append(fg)
+    return file_groups

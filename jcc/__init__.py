@@ -8,5 +8,6 @@ This file is a part of Jake's C Compiler (JCC)
 from jcc.flow import run
 import jcc.parser
 import jcc.generator
+import jcc.cleaner
 import jcc.assembler
 import jcc.flow

@@ -36,6 +36,8 @@ command_binary_table_baseline = {
     }
 
 
-def assemble(ast):
-    """Create binary code from assembly."""
-    return "Not Implemented"
+def assemble(assembly_data):
+    """Create binary code from cleaned assembly."""
+    binary_data = ""
+
+    return binary_data
