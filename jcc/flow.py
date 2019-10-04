@@ -76,8 +76,12 @@ def write_file(filename, data):
 def parse_c_code(c_data, filename):
     """Parse C file and return an abstract syntax tree."""
     vprint("[parsing C code]")
-    ast = jcc.parser.parse(c_data, filename)
-    return ast
+    try:
+        ast = jcc.parser.parse(c_data, filename)
+        return ast
+    except jcc.parser.ParseError as e:
+        print("Parse Error: " + str(e))
+        sys.exit(e.errno)
 
 
 def generate_assembly_code(ast):
