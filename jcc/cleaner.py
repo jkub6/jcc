@@ -33,5 +33,4 @@ def clean(assembly_data):
     for label in labels:
         clean_data = re.sub("(?<=(\\s|,))" + label + "(?=(,|\\n))",
                             labels[label], clean_data)
-
     return clean_data

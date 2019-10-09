@@ -39,7 +39,7 @@ def load_files(stage_num, valid):
                 fg.assembly_filepath = os.path.join(path, filename[:-2]+".s")
                 fg.binary_filepath = os.path.join(path, filename[:-2]+".dat")
                 fg.clean_filepath = os.path.join(path,
-                                                 filename[:-2]+"_clean.s")
+                                                 filename[:-2]+".scl")
                 fg.c_data = open(fg.c_filepath, "r").read()
 
                 try:

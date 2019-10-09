@@ -27,7 +27,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         if node.decl.name != "main":
             self.comment("function clean-up here")
         else:
-            self.instr("JUMP .end")
+            self.instr("JUC .end")
 
     def visit_Return(self, node):
         """Call on return visit."""
@@ -38,7 +38,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def generate(self, ast):
         """Wrap visit and return result."""
-        self.instr("JUMP main")
+        self.instr("JUC main")
         self.visit(ast)
         self.label(".end")
         return self.assembly_data

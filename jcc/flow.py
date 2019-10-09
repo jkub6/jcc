@@ -5,6 +5,7 @@ This file is a part of Jake's C Compiler (JCC)
 (c) Copyright 2019 Jacob Larkin
 """
 
+import os
 import sys
 import argparse
 from io import StringIO
@@ -25,26 +26,39 @@ def vprint(*argv):
         print(*argv)
 
 
-def parse_args():
+def parse_args(run_with_args=None):
     """Parse arguments given to JCC."""
     argparser = argparse.ArgumentParser()
     argparser.add_argument("file", metavar="input_file",
                            help="input file location")
-    argparser.add_argument("-a", "--assemby_output",
+    
+    argparser.add_argument("-c", "--compile", action="store_true",
+                           help="compile C file to assembly")
+    argparser.add_argument("-a", "--assemble", action="store_true",
+                           help="assemble input file to binary")
+    argparser.add_argument("-l", "--output_cleaned", action="store_true",
+                           help="output a file with the cleaned assembly")
+    
+    argparser.add_argument("-A", "--assemby_output",
                            metavar="assembly_output_file",
                            dest="assemby_output_filename", default="out.s",
                            help="assembly output file location")
-    argparser.add_argument("-b", "--binary_output",
+    argparser.add_argument("-L", "--cleaned_output",
+                           metavar="cleaned_output_file",
+                           dest="cleaned_output_filename", default="out.scl",
+                           help="cleaned assembly output file location")
+    argparser.add_argument("-B", "--binary_output",
                            metavar="binary_output_file",
                            dest="binary_output_filename", default="out.dat",
                            help="binary output file location")
-    argparser.add_argument("-A", "--assemble_only", action="store_true",
-                           help="assemble input file to binary (no C files)")
-    argparser.add_argument("-C", "--compile_only", action="store_true",
-                           help="compile C file to assembly (no binary)") 
+
     argparser.add_argument("-v", "--verbose", action="store_true",
                            help="enable verbose output")
-    args = argparser.parse_args()
+    
+    if run_with_args is not None:
+        args = argparser.parse_args(run_with_args)
+    else:
+        args = argparser.parse_args()
 
     global VERBOSE
     VERBOSE = args.verbose
@@ -69,6 +83,7 @@ def write_file(filename, data):
     """Write data to file."""
     vprint("[writing output file \"{0}\"]".format(filename))
     try:
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
         file = open(filename, "w")
         file.write(data)
     except Exception as e:
@@ -132,32 +147,26 @@ def generate_binary_code(clean_data):
 def finish():
     """End JCC execution."""
     vprint("[JCC finished]")
-    sys.exit(0)
 
 
-def run():
+def run(run_with_args=None):
     """Run JCC compiler."""
-    args = parse_args()
+    args = parse_args(run_with_args)
 
-    if args.compile_only:
+
+    if args.compile:
         c_data = read_file(args.file)
         ast = parse_c_code(c_data, args.file)
         assembly_data = generate_assembly_code(ast)
         write_file(args.assemby_output_filename, assembly_data)
-
-    elif args.assemble_only:
-        assembly_data = read_file(args.file)
-        clean_data = clean_assembly(assembly_data)
-        binary_data = generate_binary_code(clean_data)
-        write_file(args.binary_output_filename, binary_data)
-
     else:
-        c_data = read_file(args.file)
-        ast = parse_c_code(c_data, args.file)
-        assembly_data = generate_assembly_code(ast)
-        write_file(args.assemby_output_filename, assembly_data)
+        assembly_data = read_file(args.file)
+
+    if args.assemble:
         clean_data = clean_assembly(assembly_data)
+        if args.output_cleaned:
+            write_file(args.cleaned_output_filename, clean_data)
         binary_data = generate_binary_code(clean_data)
         write_file(args.binary_output_filename, binary_data)
-
+    
     finish()
