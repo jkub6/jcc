@@ -32,8 +32,9 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
     def visit_Return(self, node):
         """Call on return visit."""
         if isinstance(node.expr, pycparser.c_ast.Constant):
-            self.instr("XOR %RA, %RA")
-            self.instr("ADDI " + str(node.expr.value) + ", %RA")
+            # self.instr("XOR %RA, %RA")
+            # self.instr("ADDI $" + str(node.expr.value) + ", %RA")
+            self.instr("MOVI $" + str(node.expr.value) + ", %RA")
 
     def generate(self, ast):
         """Wrap visit and return result."""

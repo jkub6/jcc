@@ -41,7 +41,7 @@ def parse_args():
     argparser.add_argument("-A", "--assemble_only", action="store_true",
                            help="assemble input file to binary (no C files)")
     argparser.add_argument("-C", "--compile_only", action="store_true",
-                           help="compile C file to assembly (no binary)")
+                           help="compile C file to assembly (no binary)") 
     argparser.add_argument("-v", "--verbose", action="store_true",
                            help="enable verbose output")
     args = argparser.parse_args()

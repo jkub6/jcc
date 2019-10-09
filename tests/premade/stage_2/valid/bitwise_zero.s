@@ -1,5 +1,6 @@
     JUC main
 main:
-    MOVI $100, %RA
+    MOVI $0, %RA
+    XORI $65535, %RA
     JUC .end
 .end:

@@ -6,6 +6,8 @@ This file is a part of Jake's C Compiler (JCC)
 """
 
 import jcc
+import argparse
 
 if __name__ == "__main__":
+    jcc.parse_args()
     jcc.run()

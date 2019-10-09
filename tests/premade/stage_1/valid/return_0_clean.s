@@ -1,4 +1,3 @@
-JUMP 0x2
-XOR %RA, %RA
-ADDI 0, %RA
-JUMP 0x8
+JUC 0x2
+MOVI $0, %RA
+JUC 0x6

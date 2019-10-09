@@ -1,6 +1,5 @@
-    JUMP main
+    JUC main
 main:
-    XOR %RA, %RA
-    ADDI 2, %RA
-    JUMP .end
+    MOVI $2, %RA
+    JUC .end
 .end:
