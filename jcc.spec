@@ -2,7 +2,6 @@
 
 block_cipher = None
 
-
 a = Analysis(['main.py'],
              binaries=[],
              datas=[],
@@ -14,8 +13,10 @@ a = Analysis(['main.py'],
              win_private_assemblies=False,
              cipher=block_cipher,
              noarchive=False)
+
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
+
 exe = EXE(pyz,
           a.scripts,
           a.binaries,
