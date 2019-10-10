@@ -164,16 +164,16 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         """Call on each Typename visit."""
 
     def visit_UnaryOp(self, node):  # UnaryOp: [op, expr*]
-        """Call on each UnaryOp visit."""
+        """Call on each UnaryOp visit. Most falsely assume RA is a short."""
         self.visit(node.expr)
         if node.op == "+":
             pass  # do nothing on (+ expr)
         elif node.op == "-":
-            self.instr("SUBI $0, %RA")
+            self.instr("SUBI $0, %RA", 'unary operator "-"')
         elif node.op == "~":
-            self.instr("XORI $65535, %RA")  # assumes %RA is a short
+            self.instr("XORI $65535, %RA", 'unary operator "~"')
         elif node.op == "!":
-            self.instr("CMPI $0, %RA")
+            self.instr("CMPI $0, %RA", 'unary operator "!"')
             self.instr("BEQ $2")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $1")
@@ -187,7 +187,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         elif node.op == "--":
             raise NotImplementedError()
         else:
-            raise Exception("Unknown Unary Operator:",node.op)
+            raise Exception("Unknown Unary Operator:", node.op)
 
     def visit_Union(self, node):  # Union: [name, decls**]
         """Call on each Union visit."""
@@ -209,12 +209,16 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         """Add label."""
         self.assembly_data += l + ":\n"
 
-    def instr(self, i):
+    def instr(self, i, comment=None):
         """Add instruction."""
         self.assembly_data += "    " + i + "\n"
+        if comment is not None:
+            self.comment(comment, True)
 
-    def comment(self, c):
-        """Add instruction."""
+    def comment(self, c, inline=False):
+        """Add comment."""
+        if inline:
+            self.assembly_data = self.assembly_data[:-1]
         self.assembly_data += "    ; " + c + "\n"
 
 

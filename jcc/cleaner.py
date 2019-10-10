@@ -18,6 +18,7 @@ def clean(assembly_data):
     for line in assembly_data.split("\n"):
         line = line.strip()
         line = line.split(";")[0]
+        line = line.strip()
         if line == "":  # if blank line or was a comment
             continue
         if line.endswith(":"):
@@ -32,5 +33,5 @@ def clean(assembly_data):
     # second pass for replacing
     for label in labels:
         clean_data = re.sub("(?<=(\\s|,))" + label + "(?=(,|\\n))",
-                            labels[label], clean_data)
+                            "$" + labels[label], clean_data)
     return clean_data

@@ -47,8 +47,8 @@ def test_premade_stage_2_valid():
 
         with open(tmp_args[3], "r") as assembly_file:
             assert assembly_file.read() == file_group.assembly_data
-        # with open(tmp_args[5], "r") as cleaned_file:
-        #     assert cleaned_file.read() == file_group.clean_data
+        with open(tmp_args[5], "r") as cleaned_file:
+            assert cleaned_file.read() == file_group.clean_data
         # with open(tmp_args[7], "r") as binary_file:
         #     assert binary_file.read() == file_group.binary_data
 

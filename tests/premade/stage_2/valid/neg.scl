@@ -1,0 +1,4 @@
+JUC $0x2
+MOVI $5, %RA
+SUBI $0, %RA
+JUC $0x8

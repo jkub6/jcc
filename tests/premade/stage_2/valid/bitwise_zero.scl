@@ -1,0 +1,4 @@
+JUC $0x2
+MOVI $0, %RA
+XORI $65535, %RA
+JUC $0x8
