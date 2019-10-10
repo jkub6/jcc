@@ -22,6 +22,8 @@ def test_premade_stage_1_valid():
     for file_group in tests.premade.load_files(1, True):
         tmp_args[0] = file_group.c_filepath
 
+        print(file_group.c_filepath)
+
         jcc.run(tmp_args)
 
         with open(tmp_args[3], "r") as assembly_file:

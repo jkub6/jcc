@@ -79,8 +79,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
     def visit_ExprList(self, node):  # ExprList: [exprs**]
         """Call on each ExprList visit."""
 
-    def visit_FileAST(self, node):  # FileAST: [ext**]
-        """Call on each FileAST visit."""
+    # def visit_FileAST(self, node):  # FileAST: [ext**]
+    #    """Call on each FileAST visit."""
 
     def visit_For(self, node):  # For: [init*, cond*, next*, stmt*]
         """Call on each For visit."""
