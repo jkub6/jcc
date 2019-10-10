@@ -8,6 +8,12 @@
             "type": "shell",
             "command": "pipenv run pyinstaller --onefile jcc.spec",
             "problemMatcher": []
+        },
+        {
+            "label": "Build documentation html with Sphinx",
+            "type": "shell",
+            "command": "cd doc; pipenv run make html",
+            "problemMatcher": []
         }
     ]
 }
