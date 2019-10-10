@@ -7,11 +7,9 @@ __pycache__/
 #.vscode/
 .vscode/settings.json
 
-# cx_Freeze build folder
-build/
-
-# pyinstaller build folder
-dist/
+# pyinstaller build folders
+/dist/
+/build/
 
 #pipfile.lock
 pipfile.lock
