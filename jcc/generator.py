@@ -44,6 +44,12 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_Constant(self, node):  # Constant: [type, value]
         """Call on each Constant visit."""
+        if node.type == "int":
+            self.instr("MOVI $" + str(node.value) + ", %RA")
+        elif node.type == "char":
+            raise NotImplementedError()
+        elif node.type == "float":
+            raise NotImplementedError()
 
     def visit_Continue(self, node):  # Continue: []
         """Call on each Continue visit."""
@@ -134,10 +140,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_Return(self, node):  # Return: [expr*]
         """Call on each Return visit."""
-        if isinstance(node.expr, pycparser.c_ast.Constant):
-            # self.instr("XOR %RA, %RA")
-            # self.instr("ADDI $" + str(node.expr.value) + ", %RA")
-            self.instr("MOVI $" + str(node.expr.value) + ", %RA")
+        self.visit(node.expr)
 
     def visit_Struct(self, node):  # Struct: [name, decls**]
         """Call on each Struct visit."""
@@ -162,6 +165,29 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_UnaryOp(self, node):  # UnaryOp: [op, expr*]
         """Call on each UnaryOp visit."""
+        self.visit(node.expr)
+        if node.op == "+":
+            pass  # do nothing on (+ expr)
+        elif node.op == "-":
+            self.instr("SUBI $0, %RA")
+        elif node.op == "~":
+            self.instr("XORI $65535, %RA")  # assumes %RA is a short
+        elif node.op == "!":
+            self.instr("CMPI $0, %RA")
+            self.instr("BEQ $2")
+            self.instr("MOVI $0, %RA")
+            self.instr("BUC $1")
+            self.instr("MOVI $1, %RA")
+        elif node.op == "&":
+            raise NotImplementedError()
+        elif node.op == "*":
+            raise NotImplementedError()
+        elif node.op == "++":
+            raise NotImplementedError()
+        elif node.op == "--":
+            raise NotImplementedError()
+        else:
+            raise Exception("Unknown Unary Operator:",node.op)
 
     def visit_Union(self, node):  # Union: [name, decls**]
         """Call on each Union visit."""

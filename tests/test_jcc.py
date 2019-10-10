@@ -34,3 +34,22 @@ def test_premade_stage_1_valid():
         #     assert binary_file.read() == file_group.binary_data
 
         shutil.rmtree("tests/tmp")
+
+
+def test_premade_stage_2_valid():
+    """Test parsing a whole bunch of premade file groups."""
+    for file_group in tests.premade.load_files(2, True):
+        tmp_args[0] = file_group.c_filepath
+
+        print(file_group.c_filepath)
+
+        jcc.run(tmp_args)
+
+        with open(tmp_args[3], "r") as assembly_file:
+            assert assembly_file.read() == file_group.assembly_data
+        # with open(tmp_args[5], "r") as cleaned_file:
+        #     assert cleaned_file.read() == file_group.clean_data
+        # with open(tmp_args[7], "r") as binary_file:
+        #     assert binary_file.read() == file_group.binary_data
+
+        shutil.rmtree("tests/tmp")
