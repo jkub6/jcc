@@ -1,6 +1,35 @@
 # JCC - Jake's C Compiler
 
-## Reference Documents
+Compiles from the C language into assembly, and can then assemble to a binary file.
+
+ [ISA for produced assembly](https://utah.instructure.com/files/92486303/download?download_frd=1)
+
+## Usage
+
+```shell
+$ ./jcc -h
+usage: main.py [-h] [-c] [-a] [-l] [-A assembly_output_file]
+               [-L cleaned_output_file] [-B binary_output_file] [-v]
+               input_file
+
+positional arguments:
+  input_file            input file location
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c, --compile         compile C file to assembly
+  -a, --assemble        assemble input file to binary
+  -l, --output_cleaned  output a file with the cleaned assembly
+  -A assembly_output_file, --assemby_output assembly_output_file
+                        assembly output file location
+  -L cleaned_output_file, --cleaned_output cleaned_output_file
+                        cleaned assembly output file location
+  -B binary_output_file, --binary_output binary_output_file
+                        binary output file location
+  -v, --verbose         enable verbose output
+```
+
+## Compiler Reference Documents
 
 <https://norasandler.com/2017/11/29/Write-a-Compiler.html>
 <http://scheme2006.cs.uchicago.edu/11-ghuloum.pdf>
@@ -8,83 +37,3 @@
 <http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf>
 <http://effbot.org/zone/simple-top-down-parsing.htm#summary>
 <https://dl.acm.org/citation.cfm?doid=512927.512931>
-
-## Progress
-
-### TODO
-
-* strings, comments, and line numbers in tokenizer
-* Parser
-* Generator
-
-### Currently Implemented Syntax (almost)
-
-```properties
-<program> ::= <function>
-<function> ::= "int" <id> "(" ")" "{" <statement> "}"
-<statement> ::= "return" <exp> ";"
-<exp> ::= <int>
-```
-
-### Statements to be implemented
-
-1. expression statements
-2. compound statements
-3. selection statements
-4. iteration statements
-5. jump statements
-6. declaration statements
-7. try blocks
-8. atomic and synchronized blocks (TM TS)
-
-## Testing markdown syntax starts here
-
-**Bold**
-*Italic*
-~~strike~~
-new line now  
-this is the newline
-
-[URL to google](www.google.com)
-
-### test table
-
-Column1 | Column 2
---------|---------
-cell1   |cell2
-cell3   |cell4
-
-```python
-def foo(blah):
-    this_is_some_code()
-```
-
-* [x] task2
-* [ ] task3
-* [ ] task 4 assigned to @jkub6
-* [x] task5
-
-This should be some `inline_code()` right here.
-
-here is a block quote:
-> Once upon a time  
-> blah blah blah  
-> the end
-
-image:
-![Test image should be here](https://homepages.cae.wisc.edu/~ece533/images/airplane.png)
-
-ordered list:
-
-1. item1
-2. some other item
-3. blah
-4. blah
-
-math:
-$$
-\int_{-\infty}^\infty
-    f(\phi),d\phi
-$$
-
-The end

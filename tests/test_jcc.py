@@ -32,6 +32,3 @@ def test_premade_stage_1_valid():
         #     assert binary_file.read() == file_group.binary_data
 
         shutil.rmtree("tests/tmp")
-
-        
-

@@ -1,5 +1,5 @@
 """
-Main file for JCC.
+File describing program flow for JCC.
 
 This file is a part of Jake's C Compiler (JCC)
 (c) Copyright 2019 Jacob Larkin
@@ -31,14 +31,14 @@ def parse_args(run_with_args=None):
     argparser = argparse.ArgumentParser()
     argparser.add_argument("file", metavar="input_file",
                            help="input file location")
-    
+
     argparser.add_argument("-c", "--compile", action="store_true",
                            help="compile C file to assembly")
     argparser.add_argument("-a", "--assemble", action="store_true",
                            help="assemble input file to binary")
     argparser.add_argument("-l", "--output_cleaned", action="store_true",
                            help="output a file with the cleaned assembly")
-    
+
     argparser.add_argument("-A", "--assemby_output",
                            metavar="assembly_output_file",
                            dest="assemby_output_filename", default="out.s",
@@ -54,7 +54,7 @@ def parse_args(run_with_args=None):
 
     argparser.add_argument("-v", "--verbose", action="store_true",
                            help="enable verbose output")
-    
+
     if run_with_args is not None:
         args = argparser.parse_args(run_with_args)
     else:
@@ -153,7 +153,6 @@ def run(run_with_args=None):
     """Run JCC compiler."""
     args = parse_args(run_with_args)
 
-
     if args.compile:
         c_data = read_file(args.file)
         ast = parse_c_code(c_data, args.file)
@@ -168,5 +167,5 @@ def run(run_with_args=None):
             write_file(args.cleaned_output_filename, clean_data)
         binary_data = generate_binary_code(clean_data)
         write_file(args.binary_output_filename, binary_data)
-    
+
     finish()
