@@ -31,6 +31,10 @@ optional arguments:
   -v, --verbose         enable verbose output
 ```
 
+## Notes
+
+* Does not currently short circuit logical operations
+
 ## Compiler Reference Documents
 
 <https://norasandler.com/2017/11/29/Write-a-Compiler.html>

@@ -73,15 +73,15 @@ skips = ["3div", "3mod", "3mult", "3parens", "3associativity_2", "3precedence",
          "4skip_on_failure_multi_short_circuit",
          "4skip_on_failure_short_circuit_and",
          "4skip_on_failure_short_circuit_or"]
-stages = [i+1 for i in range(4)]
+stages = [i+1 for i in range(5)]
 parameters = []
 ids = []
 for stage in stages:
     for fileGroup in load_files(stage, True):
         parameters.append((stage, fileGroup, 0))
         ids.append(str(stage) + ":" + fileGroup.name + ".s")
-        parameters.append((stage, fileGroup, 1))
-        ids.append(str(stage) + ":" + fileGroup.name + ".scl")
+        # parameters.append((stage, fileGroup, 1))
+        # ids.append(str(stage) + ":" + fileGroup.name + ".scl")
         # parameters.append((stage, fileGroup, 2))
         # ids.append(str(stage) + ":" + fileGroup.name + ".dat")
 
