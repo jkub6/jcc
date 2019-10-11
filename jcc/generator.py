@@ -31,17 +31,13 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_BinaryOp(self, node):  # BinaryOp: [op, left*, right*]
         """Call on each BinaryOp visit."""
+        self.visit(node.left)
+        self.instr("PUSH %RA")
+        self.visit(node.right)
+        self.instr("POP %R0")
         if node.op == "+":
-            self.visit(node.left)
-            self.instr("PUSH %RA")
-            self.visit(node.right)
-            self.instr("POP %R0")
             self.instr("ADD %R0, %RA")
         elif node.op == "-":
-            self.visit(node.left)
-            self.instr("PUSH %RA")
-            self.visit(node.right)
-            self.instr("POP %R0")
             self.instr("SUB %R0, %RA")
         elif node.op == "*":
             pass
@@ -60,21 +56,61 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         elif node.op == ">>":
             pass
         elif node.op == "||":
-            pass
+            self.instr("CMPI $0, %R0")
+            self.instr("BEQ $0x4")
+            self.instr("MOVI $1, %RA")
+            self.instr("BUC $0x2")
+            self.instr("MOVI $0, %RA")
+
+            self.instr("CMPI $0, %RA")
+            self.instr("BEQ $0x2")
+            self.instr("MOVI $1, %RA")
         elif node.op == "&&":
-            pass
+            self.instr("CMPI $0, %R0")
+            self.instr("BEQ $0x4")
+            self.instr("MOVI $1, %RA")
+            self.instr("BUC $0x2")
+            self.instr("MOVI $0, %RA")
+
+            self.instr("CMPI $0, %RA")
+            self.instr("BNE $0x2")
+            self.instr("MOVI $0, %RA")
         elif node.op == "<":
-            pass
+            self.instr("CMP $RA, %R0")
+            self.instr("BLT $0x4")
+            self.instr("MOVI $0, %RA")
+            self.instr("BUC $0x2")
+            self.instr("MOVI $1, %RA")
         elif node.op == "<=":
-            pass
+            self.instr("CMP $RA, %R0")
+            self.instr("BLE $0x4")
+            self.instr("MOVI $0, %RA")
+            self.instr("BUC $0x2")
+            self.instr("MOVI $1, %RA")
         elif node.op == ">":
-            pass
+            self.instr("CMP $RA, %R0")
+            self.instr("BGT $0x4")
+            self.instr("MOVI $0, %RA")
+            self.instr("BUC $0x2")
+            self.instr("MOVI $1, %RA")
         elif node.op == ">=":
-            pass
+            self.instr("CMP $RA, %R0")
+            self.instr("BGE $0x4")
+            self.instr("MOVI $0, %RA")
+            self.instr("BUC $0x2")
+            self.instr("MOVI $1, %RA")
         elif node.op == "==":
-            pass
+            self.instr("CMP $RA, %R0")
+            self.instr("BEQ $0x4")
+            self.instr("MOVI $0, %RA")
+            self.instr("BUC $0x2")
+            self.instr("MOVI $1, %RA")
         elif node.op == "!=":
-            pass
+            self.instr("CMP $RA, %R0")
+            self.instr("BNE $0x4")
+            self.instr("MOVI $0, %RA")
+            self.instr("BUC $0x2")
+            self.instr("MOVI $1, %RA")
 
     def visit_Break(self, node):  # Break: []
         """Call on each Break visit."""
@@ -261,9 +297,9 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.instr("XORI $65535, %RA")
         elif node.op == "!":
             self.instr("CMPI $0, %RA")
-            self.instr("BEQ $2")
+            self.instr("BEQ $0x4")
             self.instr("MOVI $0, %RA")
-            self.instr("BUC $1")
+            self.instr("BUC $0x2")
             self.instr("MOVI $1, %RA")
         elif node.op == "&":
             raise NotImplementedError()
