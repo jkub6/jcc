@@ -35,6 +35,8 @@ command_binary_table_baseline = {
     "UU4": (0b0000, 0b1111)
     }
 
+pseudo_instructions = ["push", "pop", "mul?", "div?"]
+
 
 def assemble(assembly_data):
     """Create binary code from cleaned assembly."""

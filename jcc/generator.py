@@ -14,6 +14,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
     def __init__(self):
         """Override default constructor."""
         self.assembly_data = ""
+        self.source_line_num = 0
+        self.to_be_commented = None
 
     def visit_ArrayDecl(self, node):  # ArrayDecl: [type*, dim*, dim_quals]
         """Call on each ArrayDecl visit."""
@@ -29,7 +31,51 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_BinaryOp(self, node):  # BinaryOp: [op, left*, right*]
         """Call on each BinaryOp visit."""
-        raise NotImplementedError()
+        print(node.left.coord.line, node.coord,node.right.coord)
+        if node.op == "+":
+            self.visit(node.left)
+            self.instr("PUSH %RA")
+            self.visit(node.right)
+            self.instr("POP %R0")
+            self.instr("ADD %R0, %RA")
+        elif node.op == "-":
+            self.visit(node.left)
+            self.instr("PUSH %RA")
+            self.visit(node.right)
+            self.instr("POP %R0")
+            self.instr("SUB %R0, %RA")
+        elif node.op == "*":
+            pass
+        elif node.op == "/":
+            pass
+        elif node.op == "%":
+            pass
+        elif node.op == "|":
+            pass
+        elif node.op == "&":
+            pass
+        elif node.op == "^":
+            pass
+        elif node.op == "<<":
+            pass
+        elif node.op == ">>":
+            pass
+        elif node.op == "||":
+            pass
+        elif node.op == "&&":
+            pass
+        elif node.op == "<":
+            pass
+        elif node.op == "<=":
+            pass
+        elif node.op == ">":
+            pass
+        elif node.op == ">=":
+            pass
+        elif node.op == "==":
+            pass
+        elif node.op == "!=":
+            pass
 
     def visit_Break(self, node):  # Break: []
         """Call on each Break visit."""
@@ -54,7 +100,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
     def visit_Constant(self, node):  # Constant: [type, value]
         """Call on each Constant visit."""
         if node.type == "int":
-            self.instr("MOVI $" + str(node.value) + ", %RA")
+            self.instr("MOVI ${0}, %RA".format(node.value))
         elif node.type == "char":
             raise NotImplementedError()
         elif node.type == "float":
@@ -204,15 +250,18 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_UnaryOp(self, node):  # UnaryOp: [op, expr*]
         """Call on each UnaryOp visit. Most falsely assume RA is a short."""
+        # self.comment('unary operator "{0}"'.format(node.op))
         self.visit(node.expr)
         if node.op == "+":
             pass  # do nothing on (+ expr)
         elif node.op == "-":
-            self.instr("SUBI $0, %RA", 'unary operator "-"')
+            self.instr("MOVI $0, %R0")
+            self.instr("SUBI $RA, %R0")
+            self.instr("MOV $R0, %RA")
         elif node.op == "~":
-            self.instr("XORI $65535, %RA", 'unary operator "~"')
+            self.instr("XORI $65535, %RA")
         elif node.op == "!":
-            self.instr("CMPI $0, %RA", 'unary operator "!"')
+            self.instr("CMPI $0, %RA")
             self.instr("BEQ $2")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $1")
@@ -253,15 +302,21 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def instr(self, i, comment=None):
         """Add instruction."""
-        self.assembly_data += "    " + i + "\n"
+        if self.to_be_commented is not None:
+            comment = self.to_be_commented
+            self.to_be_commented = None
         if comment is not None:
-            self.comment(comment, True)
+            self.assembly_data += "    {0}".format(i)
+            self.comment(comment)
+        else:
+            self.assembly_data += "    {0}\n".format(i)
 
-    def comment(self, c, inline=False):
+    def comment(self, c, to_be_commented=False):
         """Add comment."""
-        if inline:
-            self.assembly_data = self.assembly_data[:-1]
-        self.assembly_data += "    ; " + c + "\n"
+        if not to_be_commented:
+            self.assembly_data += "    ; {0}\n".format(c)
+        else:
+            self.to_be_commented = to_be_commented
 
 
 def generate(ast):

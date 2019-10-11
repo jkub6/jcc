@@ -22,19 +22,11 @@ sys.setrecursionlimit(1500)
 # -- Project information -----------------------------------------------------
 
 project = 'JCC'
-copyright = '2019, Jake'
-author = 'Jake'
+copyright = '2019, Jacob Larkin'
+author = 'Jacob Larkin'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
-
-
-latex_elements = {
-    'papersize': 'letterpaper',
-    'pointsize': '10pt',
-    'preamble': '',
-    'figure_align': 'htbp'
-}
+release = '0.0.1'
 
 
 # -- General configuration ---------------------------------------------------

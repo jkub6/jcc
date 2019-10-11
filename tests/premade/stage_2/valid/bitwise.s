@@ -1,7 +1,7 @@
     JUC main
 main:
     MOVI $12, %RA
-    CMPI $0, %RA    ; unary operator "!"
+    CMPI $0, %RA
     BEQ $2
     MOVI $0, %RA
     BUC $1
