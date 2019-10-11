@@ -31,7 +31,6 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_BinaryOp(self, node):  # BinaryOp: [op, left*, right*]
         """Call on each BinaryOp visit."""
-        print(node.left.coord.line, node.coord,node.right.coord)
         if node.op == "+":
             self.visit(node.left)
             self.instr("PUSH %RA")
