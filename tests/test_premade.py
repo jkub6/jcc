@@ -101,6 +101,27 @@ def test(stage, fileGroup, phase):
             assert binary_file.read() == fileGroup.binary_data
 
 
+stages_inv = [i+1 for i in range(10)]
+parameters_inv = []
+ids_inv = []
+for stage in stages_inv:
+    for fileGroup in load_files(stage, False):
+        parameters_inv.append((stage, fileGroup))
+        ids_inv.append(str(stage) + ":" + fileGroup.name)
+
+
+@pytest.mark.parametrize("stage, fileGroup", parameters_inv, ids=ids_inv)
+def test_inv(stage, fileGroup):
+    """Test parsing a whole bunch of premade file groups."""
+    tmp_args = [fileGroup.c_filepath, "-cla", "-A", "tests/tmp/tmp.s",
+                "-L", "tests/tmp/tmp.scl", "-B", "tests/tmp/tmp.dat"]
+
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        jcc.run(tmp_args)
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 3
+
+
 def teardown_module(module):
     """Teardown the module."""
     shutil.rmtree("tests/tmp")
