@@ -1,5 +1,7 @@
 # JCC - Jake's C Compiler
 
+[Download precompiled exe here](jkub6.giuhub.io/jcc)
+
 [JCC Dcumentation](https://jkub6.github.io/jcc)
 
 Compiles from the C language into assembly, and can then assemble to a binary file.

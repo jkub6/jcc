@@ -12,7 +12,7 @@
         {
             "label": "Build documentation html with Sphinx",
             "type": "shell",
-            "command": "cd docs; pipenv run make html",
+            "command": "cp dist/jcc.exe docs/source/downloads/jcc.exe; cd docs; pipenv run make html",
             "problemMatcher": []
         }
     ]
