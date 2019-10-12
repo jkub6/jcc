@@ -18,4 +18,4 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-* `CNN <http://cnn.com>`_
+* Link to premade exe :download:`here <downloads/jcc.exe>`
