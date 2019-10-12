@@ -1,6 +1,6 @@
 # JCC - Jake's C Compiler
 
-[Download precompiled exe here](https://jkub6.giuhub.io/jcc)
+[Download precompiled exe here](https://jkub6.github.io/jcc)
 
 [JCC Dcumentation](https://jkub6.github.io/jcc)
 
