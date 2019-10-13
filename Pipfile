@@ -13,6 +13,7 @@ pyinstaller = "*"
 sphinx = "*"
 cocotb-test = "*"
 cocotb = "*"
+sphinx-rtd-theme = "*"
 
 [packages]
 pycparser = "*"
