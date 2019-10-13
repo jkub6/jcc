@@ -18,4 +18,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-* Link to premade exe :download:`here <downloads/jcc.exe>`
