@@ -1,5 +1,7 @@
 # JCC - Jake's C Compiler
 
+Development requirments: icarus-verilog
+
 [Download precompiled exe here](https://jkub6.github.io/jcc)
 
 [JCC Dcumentation](https://jkub6.github.io/jcc)

@@ -11,6 +11,8 @@ pep8 = "*"
 pytest = "==5.0.1"
 pyinstaller = "*"
 sphinx = "*"
+cocotb-test = "*"
+cocotb = "*"
 
 [packages]
 pycparser = "*"
