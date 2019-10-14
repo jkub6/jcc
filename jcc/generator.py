@@ -6,6 +6,25 @@ This file is a part of Jake's C Compiler (JCC)
 """
 
 import pycparser
+import sys
+
+
+class Scope:
+    """Deffine a scope of variables within a given block."""
+
+    def __init__(self):
+        """Override default constructor."""
+        self.variables = {}
+        self.stack_index = 2
+
+
+class NodeData:
+    """Represent the data stored at each node."""
+
+    def __init__(self, _parent, _scope=None):
+        """Override default constructor."""
+        self.scope = _scope
+        self.parent = _parent
 
 
 class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
@@ -16,6 +35,49 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         self.assembly_data = ""
         self.source_line_num = 0
         self.to_be_commented = None
+        self.node_data_lookup = {}
+
+    def get_parent(self, node):
+        """Return the parent of the given node."""
+        if node not in self.node_data_lookup.keys():
+            return None
+        return self.node_data_lookup[node].parent
+
+    def get_scope(self, node):
+        """Return the parent of the given node."""
+        if node not in self.node_data_lookup.keys():
+            return None
+        return self.node_data_lookup[node].scope
+
+    def set_scope(self, node, _scope):
+        """Return the scope for the given node."""
+        if node not in self.node_data_lookup.keys():
+            raise Exception("not in nodes, tried to set scope")
+        self.node_data_lookup[node].scope = _scope
+
+    def get_closest_scope(self, node):
+        """Return the scope that belongs to."""
+        while node is not None:
+            scope = self.get_scope(node)
+            if scope is not None:
+                return self.get_scope(node)
+            node = self.get_parent(node)
+        return None
+
+    def get_variable_location(self, name, node):
+        """Return stack depth of a variable in the nearest scope, else None."""
+        while node is not None:
+            scope = self.get_scope(node)
+            if scope is not None:
+                if name in scope.variables.keys():
+                    return scope.variables[name]  # might have to add per depth
+            node = self.get_parent(node)
+        return None
+
+    def pvisit(self, node, parent):
+        """Wrap visit function, but set parent."""
+        self.node_data_lookup[node] = NodeData(parent)
+        self.visit(node)
 
     def visit_ArrayDecl(self, node):  # ArrayDecl: [type*, dim*, dim_quals]
         """Call on each ArrayDecl visit."""
@@ -27,13 +89,19 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_Assignment(self, node):  # Assignment: [op, lvalue*, rvalue*]
         """Call on each Assignment visit."""
-        raise NotImplementedError()
+        if node.op == "=":
+            # TODO visit left node instead of just taking name
+            # if isinstance(node.lvalue, type): # check if lvalue is a variable
+            self.pvisit(node.rvalue, node)
+            self._assignment(node.lvalue.name, node)
+        else:
+            raise NotImplementedError()
 
     def visit_BinaryOp(self, node):  # BinaryOp: [op, left*, right*]
         """Call on each BinaryOp visit."""
-        self.visit(node.left)
+        self.pvisit(node.left, node)
         self.instr("PUSH %RA")
-        self.visit(node.right)
+        self.pvisit(node.right, node)
         self.instr("POP %R0")
         if node.op == "+":
             self.instr("ADD %R0, %RA")
@@ -145,10 +213,21 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         """Call on each Continue visit."""
         raise NotImplementedError()
 
-    def visit_Decl(self, node):
+    def visit_Decl(self, node):  # TODO make work with bitsizes
         # Decl: [name, quals, storage, funcspec, type*, init*, bitsize*]
         """Call on each Decl visit."""
-        raise NotImplementedError()
+        # check if short, then:
+        size_in_bytes = 2
+
+        scope = self.get_closest_scope(node)
+        if node.type.declname in scope.variables:
+            raise Exception(node.type.declname + " is already in scope!")
+        scope.variables[node.type.declname] = scope.stack_index
+        scope.stack_index += size_in_bytes
+
+        if node.init is not None:
+            self.pvisit(node.init, node)
+            self._assignment(node.name, node)
 
     def visit_DeclList(self, node):  # DeclList: [decls**]
         """Call on each DeclList visit."""
@@ -186,8 +265,12 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         """Call on each ExprList visit."""
         raise NotImplementedError()
 
-    # def visit_FileAST(self, node):  # FileAST: [ext**]
-    #    """Call on each FileAST visit."""
+    def visit_FileAST(self, node):  # FileAST: [ext**]
+        """Call on each FileAST visit."""
+        scope = Scope()
+        self.set_scope(node, scope)
+        for c in node:
+            self.pvisit(c, node)
 
     def visit_For(self, node):  # For: [init*, cond*, next*, stmt*]
         """Call on each For visit."""
@@ -203,16 +286,29 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_FuncDef(self, node):  # FuncDef: [decl*, param_decls**, body*]
         """Call on each FuncDef visit."""
+        found_return = False
+
+        scope = Scope()  # add arguments to scope
+        self.set_scope(node, scope)
+
         self.label(node.decl.name)
         if node.decl.name != "main":
             self.comment("function prep here")
+            self.instr("PUSH %R12")
+            self.instr("MOV %SP, %R12")
 
         for c in node.body:
-            self.visit(c)
+            if isinstance(c, pycparser.c_ast.Return):
+                found_return = True
+            self.pvisit(c, node)
 
         if node.decl.name != "main":
             self.comment("function clean-up here")
+            self.instr("MOV %R12, %SP")
+            self.instr("POP %R12")
         else:
+            if not found_return:
+                self.instr("MOVI $0, %RA")
             self.instr("JUC .end")
 
     def visit_Goto(self, node):  # Goto: [name]
@@ -221,7 +317,12 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_ID(self, node):  # ID: [name]
         """Call on each ID visit."""
-        raise NotImplementedError()
+        dist = self.get_variable_location(node.name, node)
+        if dist is None:
+            raise Exception(node.name + " not found in scope")
+        self.instr("MOV %R12, %R0")
+        self.instr("SUBI ${0}, %R0".format(dist))
+        self.instr("LOAD %RA, %R0")
 
     def visit_IdentifierType(self, node):  # IdentifierType: [names]
         """Call on each IdentifierType visit."""
@@ -253,7 +354,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_Return(self, node):  # Return: [expr*]
         """Call on each Return visit."""
-        self.visit(node.expr)
+        self.pvisit(node.expr, node)
 
     def visit_Struct(self, node):  # Struct: [name, decls**]
         """Call on each Struct visit."""
@@ -286,7 +387,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
     def visit_UnaryOp(self, node):  # UnaryOp: [op, expr*]
         """Call on each UnaryOp visit. Most falsely assume RA is a short."""
         # self.comment('unary operator "{0}"'.format(node.op))
-        self.visit(node.expr)
+        self.pvisit(node.expr, node)
         if node.op == "+":
             pass  # do nothing on (+ expr)
         elif node.op == "-":
@@ -324,10 +425,19 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         """Call on each Pragma visit."""
         raise NotImplementedError()
 
+    def _assignment(self, name, node):
+        """Assign value to variable."""
+        dist = self.get_variable_location(name, node)
+        if dist is None:
+            raise Exception(name + " not found in scope")
+        self.instr("MOV %R12, %R0")
+        self.instr("SUBI ${0}, %R0".format(dist))
+        self.instr("STOR %RA, %R0")
+
     def generate(self, ast):
         """Wrap visit and return result."""
         self.instr("JUC main")
-        self.visit(ast)
+        self.pvisit(ast, None)
         self.label(".end")
         return self.assembly_data
 
