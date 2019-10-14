@@ -10,7 +10,7 @@ Welcome to JCC's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   usage
 
 Indices and tables
 ==================

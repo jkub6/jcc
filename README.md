@@ -2,7 +2,7 @@
 
 Development requirments: icarus-verilog
 
-[Download precompiled exe here](https://jkub6.github.io/jcc)
+[Download precompiled exe here](https://github.com/jkub6/jcc/releases)
 
 [JCC Dcumentation](https://jkub6.github.io/jcc)
 
