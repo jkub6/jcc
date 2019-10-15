@@ -32,10 +32,13 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def __init__(self):
         """Override default constructor."""
+        self.readability = 0
         self.assembly_data = ""
         self.source_line_num = 0
         self.to_be_commented = None
         self.node_data_lookup = {}
+        self.num_ternaries = 0
+        self.num_ifs = 0
 
     def get_parent(self, node):
         """Return the parent of the given node."""
@@ -330,7 +333,17 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_If(self, node):  # If: [cond*, iftrue*, iffalse*]
         """Call on each If visit."""
-        raise NotImplementedError()
+        self.pvisit(node.cond, node)
+        self.instr("CMPI 0, %RA", "if{0}".format(self.num_ifs))
+        self.instr("JNE .if{0}_else".format(self.num_ifs))
+        self.pvisit(node.iftrue, node)
+        self.instr("JUC .if{0}_done".format(self.num_ifs))
+        self.label(".if{0}_else".format(self.num_ifs))
+        if node.iffalse is not None:
+            self.pvisit(node.iffalse, node)
+        self.label(".if{0}_done".format(self.num_ifs))
+
+        self.num_ifs += 1
 
     def visit_InitList(self, node):  # InitList: [exprs**]
         """Call on each InitList visit."""
@@ -370,7 +383,16 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_TernaryOp(self, node):  # TernaryOp: [cond*, iftrue*, iffalse*]
         """Call on each TernaryOp visit."""
-        raise NotImplementedError()
+        self.pvisit(node.cond, node)
+        self.instr("CMPI 0, %RA", "ter{0}".format(self.num_ternaries))
+        self.instr("JNE .ter{0}_false".format(self.num_ternaries))
+        self.pvisit(node.iftrue, node)
+        self.instr("JUC .ter{0}_done".format(self.num_ternaries))
+        self.label(".ter{0}_false".format(self.num_ternaries))
+        self.pvisit(node.iffalse, node)
+        self.label(".ter{0}_done".format(self.num_ternaries))
+
+        self.num_ternaries += 1
 
     def visit_TypeDecl(self, node):  # TypeDecl: [declname, quals, type*]
         """Call on each TypeDecl visit."""
@@ -434,8 +456,9 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         self.instr("SUBI ${0}, %R0".format(dist))
         self.instr("STOR %RA, %R0")
 
-    def generate(self, ast):
+    def generate(self, ast, readability):
         """Wrap visit and return result."""
+        self.readability = readability
         self.instr("JUC main")
         self.pvisit(ast, None)
         self.label(".end")
@@ -445,28 +468,32 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         """Add label."""
         self.assembly_data += l + ":\n"
 
-    def instr(self, i, comment=None):
+    def instr(self, i, comment=None, readability=1):
         """Add instruction."""
-        if self.to_be_commented is not None:
-            comment = self.to_be_commented
-            self.to_be_commented = None
-        if comment is not None:
-            self.assembly_data += "    {0}".format(i)
-            self.comment(comment)
+        if readability <= self.readability:
+            if self.to_be_commented is not None:
+                comment = self.to_be_commented
+                self.to_be_commented = None
+            if comment is not None:
+                self.assembly_data += "    {0}".format(i)
+                self.comment(comment)
+            else:
+                self.assembly_data += "    {0}\n".format(i)
         else:
             self.assembly_data += "    {0}\n".format(i)
 
-    def comment(self, c, to_be_commented=False):
+    def comment(self, c, to_be_commented=False, readability=1):
         """Add comment."""
-        if not to_be_commented:
-            self.assembly_data += "    ; {0}\n".format(c)
-        else:
-            self.to_be_commented = to_be_commented
+        if readability <= self.readability:
+            if not to_be_commented:
+                self.assembly_data += "    ; {0}\n".format(c)
+            else:
+                self.to_be_commented = to_be_commented
 
 
-def generate(ast):
+def generate(ast, readability=0):
     """Generate assembly code from abstract syntax tree."""
     av = AssemblyGenerator()
-    assembly_data = av.generate(ast)
+    assembly_data = av.generate(ast, readability)
 
     return assembly_data

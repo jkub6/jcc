@@ -73,7 +73,12 @@ skips = ["3div", "3mod", "3mult", "3parens", "3associativity_2", "3precedence",
          "4skip_on_failure_multi_short_circuit",
          "4skip_on_failure_short_circuit_and",
          "4skip_on_failure_short_circuit_or"]
-stages = [i+1 for i in range(5)]
+skips += ["6assign_ternary", "6else", "6if_nested", "6if_nested_2",
+          "6if_nested_3", "6if_nested_4", "6if_nested_5",
+          "6if_taken", "6multiple_if", "6multiple_ternary", "6nested_ternary",
+          "6nested_ternary_2", "6rh_assignment", "6ternary_short_circuit",
+          "6ternary_short_circuit_2"]
+stages = [i+1 for i in range(6)]
 parameters = []
 ids = []
 for stage in stages:
@@ -93,7 +98,8 @@ def test(stage, fileGroup, phase):
         pytest.skip("Unimplemented")
 
     tmp_args = [fileGroup.c_filepath, "-cla", "-A", "tests/tmp/tmp.s",
-                "-L", "tests/tmp/tmp.scl", "-B", "tests/tmp/tmp.dat"]
+                "-L", "tests/tmp/tmp.scl", "-B", "tests/tmp/tmp.dat",
+                "-r", "0"]
 
     jcc.run(tmp_args)
 

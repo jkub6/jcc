@@ -52,6 +52,14 @@ def parse_args(run_with_args=None):
                            dest="binary_output_filename", default="out.dat",
                            help="binary output file location")
 
+ #   argparser.add_argument("-r", "--readability", action="store_true",
+ #                          help="level (0-3) of assembly code readability" +
+ #                               "comments, spacing, etc...")
+    argparser.add_argument('-r', '--readability', required=False, type=int,
+                           choices=range(0, 3), metavar="[0-3]",
+                           help="level (0-3) of assembly code readability \
+                                comments, spacing, etc...", default=0)
+
     argparser.add_argument("-v", "--verbose", action="store_true",
                            help="enable verbose output")
 
@@ -114,10 +122,10 @@ def parse_c_code(c_data, filename):
         sys.exit(e.errno)
 
 
-def generate_assembly_code(ast):
+def generate_assembly_code(ast, readability):
     """Generate assembly code from C code."""
     vprint("[generating assembly code]")
-    assembly_data = jcc.generator.generate(ast)
+    assembly_data = jcc.generator.generate(ast, readability)
     vprint("[generated assembly code begin]\n")
     vprint(assembly_data)
     vprint("[generated assembly code end]")
@@ -156,7 +164,7 @@ def run(run_with_args=None):
     if args.compile:
         c_data = read_file(args.file)
         ast = parse_c_code(c_data, args.file)
-        assembly_data = generate_assembly_code(ast)
+        assembly_data = generate_assembly_code(ast, args.readability)
         write_file(args.assemby_output_filename, assembly_data)
     else:
         assembly_data = read_file(args.file)
