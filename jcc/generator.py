@@ -40,8 +40,10 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         self.source_line_num = 0
         self.to_be_commented = None
         self.node_data_lookup = {}
+
         self.num_ternaries = 0
         self.num_ifs = 0
+        self.found_return = False
 
     def get_parent(self, node):
         """Return the parent of the given node."""
@@ -67,6 +69,14 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             scope = self.get_scope(node)
             if scope is not None:
                 return self.get_scope(node)
+            node = self.get_parent(node)
+        return None
+
+    def get_closest_function(self, node):
+        """Get the function that a node is inside of."""
+        while node is not None:
+            if isinstance(node, pycparser.c_ast.FuncDef):
+                return node.decl.name
             node = self.get_parent(node)
         return None
 
@@ -304,7 +314,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_FuncDef(self, node):  # FuncDef: [decl*, param_decls**, body*]
         """Call on each FuncDef visit."""
-        found_return = False
+        self.found_return = False
 
         scope = Scope()  # add arguments to scope
         self.set_scope(node, scope)
@@ -316,17 +326,18 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.instr("MOV %SP, %R12")
 
         for c in node.body:
-            if isinstance(c, pycparser.c_ast.Return):
-                found_return = True
             self.pvisit(c, node)
 
+        if node.decl.name == "main":
+            if not self.found_return:
+                self.instr("MOVI $0, %RA")
+
+        self.label("{0}._cleanup".format(node.decl.name))
+
         if node.decl.name != "main":
-            self.comment("function clean-up here")
             self.instr("MOV %R12, %SP")
             self.instr("POP %R12")
         else:
-            if not found_return:
-                self.instr("MOVI $0, %RA")
             self.instr("JUC .end")
 
     def visit_Goto(self, node):  # Goto: [name]
@@ -385,9 +396,12 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_Return(self, node):  # Return: [expr*]
         """Call on each Return visit."""
+        self.found_return = True
         if node.expr is None:
             self.error("No value to return", node)
         self.pvisit(node.expr, node)
+        func_name = self.get_closest_function(node)
+        self.instr("JUC {0}._cleanup".format(func_name))
 
     def visit_Struct(self, node):  # Struct: [name, decls**]
         """Call on each Struct visit."""

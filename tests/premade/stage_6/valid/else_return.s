@@ -16,6 +16,8 @@ main:
     MOVI $2, %RA
     JUC main._cleanup
 .if0_done:
+    MOVI $3, %RA
+    JUC main._cleanup
 main._cleanup:
     JUC .end
 .end:

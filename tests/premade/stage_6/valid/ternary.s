@@ -22,5 +22,7 @@ main:
 .ter0_false:
     MOVI $5, %RA
 .ter0_done:
+    JUC main._cleanup
+main._cleanup:
     JUC .end
 .end:

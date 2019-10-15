@@ -12,5 +12,7 @@ main:
     MOVI $0, %RA
     BUC $0x2
     MOVI $1, %RA
+    JUC main._cleanup
+main._cleanup:
     JUC .end
 .end:

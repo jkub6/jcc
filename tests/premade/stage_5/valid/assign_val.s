@@ -10,5 +10,7 @@ main:
     MOV %R12, %R0
     SUBI $4, %R0
     LOAD %RA, %R0
+    JUC main._cleanup
+main._cleanup:
     JUC .end
 .end:

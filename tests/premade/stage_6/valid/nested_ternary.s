@@ -41,5 +41,7 @@ main:
     MOVI $7, %RA
 .ter1_done:
 .ter0_done:
+    JUC main._cleanup
+main._cleanup:
     JUC .end
 .end:

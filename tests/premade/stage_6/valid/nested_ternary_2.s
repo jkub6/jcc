@@ -45,5 +45,7 @@ main:
     LOAD %RA, %R0
     POP %R0
     ADD %R0, %RA
+    JUC main._cleanup
+main._cleanup:
     JUC .end
 .end:

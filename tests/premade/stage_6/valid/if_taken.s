@@ -1,7 +1,29 @@
-int main() {
-    int a = 1;
-    int b = 0;
-    if (a)
-        b = 1;
-    return b;
-}
+    JUC main
+main:
+    MOVI $1, %RA
+    MOV %R12, %R0
+    SUBI $2, %R0
+    STOR %RA, %R0
+    MOVI $0, %RA
+    MOV %R12, %R0
+    SUBI $4, %R0
+    STOR %RA, %R0
+    MOV %R12, %R0
+    SUBI $2, %R0
+    LOAD %RA, %R0
+    CMPI 0, %RA
+    JNE .if0_else
+    MOVI $1, %RA
+    MOV %R12, %R0
+    SUBI $4, %R0
+    STOR %RA, %R0
+    JUC .if0_done
+.if0_else:
+.if0_done:
+    MOV %R12, %R0
+    SUBI $4, %R0
+    LOAD %RA, %R0
+    JUC main._cleanup
+main._cleanup:
+    JUC .end
+.end:

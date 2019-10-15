@@ -38,6 +38,7 @@ optional arguments:
 ## Notes
 
 * Does not currently short circuit logical operations
+* Big error, returns don't break from function (ex: stage 7, else_return.c)
 
 ## Compiler Reference Documents
 

@@ -15,5 +15,7 @@ main:
     CMPI $0, %RA
     BNE $0x2
     MOVI $0, %RA
+    JUC main._cleanup
+main._cleanup:
     JUC .end
 .end:
