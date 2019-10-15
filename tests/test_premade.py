@@ -78,7 +78,9 @@ skips = ["3div", "3mod", "3mult", "3parens", "3associativity_2", "3precedence",
 #          "6if_taken", "6multiple_if", "6multiple_ternary", "6nested_ternary",
 #          "6nested_ternary_2", "6rh_assignment", "6ternary_short_circuit",
 #          "6ternary_short_circuit_2"]
-stages = [i+1 for i in range(6)]
+skips += ["7declare_after_block", "7declare_block", "7declare_late",
+          "7multi_nesting", "7nested_if", "7nested_scope"]
+stages = [i+1 for i in range(7)]
 parameters = []
 ids = []
 for stage in stages:
@@ -114,25 +116,29 @@ def test(stage, fileGroup, phase):
             assert binary_file.read() == fileGroup.binary_data
 
 
-stages_inv = [i+1 for i in range(10)]
+stages_inv = [i+1 for i in range(7)]
 parameters_inv = []
 ids_inv = []
+skips_inv = ["3malformed_paren"]
 for stage in stages_inv:
     for fileGroup in load_files(stage, False):
         parameters_inv.append((stage, fileGroup))
         ids_inv.append(str(stage) + ":" + fileGroup.name)
 
 
-# @pytest.mark.parametrize("stage, fileGroup", parameters_inv, ids=ids_inv)
-# def test_inv(stage, fileGroup):
-#     """Test parsing a whole bunch of premade file groups."""
-#     tmp_args = [fileGroup.c_filepath, "-cla", "-A", "tests/tmp/tmp.s",
-#                 "-L", "tests/tmp/tmp.scl", "-B", "tests/tmp/tmp.dat"]
+@pytest.mark.parametrize("stage, fileGroup", parameters_inv, ids=ids_inv)
+def test_inv(stage, fileGroup):
+    """Test parsing a whole bunch of premade file groups."""
+    if str(stage)+fileGroup.name in skips_inv:
+        pytest.skip("Unimplemented")
 
-#     with pytest.raises(SystemExit) as pytest_wrapped_e:
-#         jcc.run(tmp_args)
-#     assert pytest_wrapped_e.type == SystemExit
-#     assert pytest_wrapped_e.value.code == 3
+    tmp_args = [fileGroup.c_filepath, "-cla", "-A", "tests/tmp/tmp.s",
+                "-L", "tests/tmp/tmp.scl", "-B", "tests/tmp/tmp.dat"]
+
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        jcc.run(tmp_args)
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 3
 
 
 def teardown_module(module):

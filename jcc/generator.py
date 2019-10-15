@@ -5,8 +5,11 @@ This file is a part of Jake's C Compiler (JCC)
 (c) Copyright 2019 Jacob Larkin
 """
 
-import pycparser
 import sys
+
+import pycparser
+
+from jcc.parser import ParseError
 
 
 class Scope:
@@ -92,20 +95,25 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_Assignment(self, node):  # Assignment: [op, lvalue*, rvalue*]
         """Call on each Assignment visit."""
-        if node.op == "=":
-            # TODO visit left node instead of just taking name
-            # if isinstance(node.lvalue, type): # check if lvalue is a variable
-            self.pvisit(node.rvalue, node)
-            self._assignment(node.lvalue.name, node)
-        else:
-            raise NotImplementedError()
+        try:
+            if node.op == "=":
+                # TODO visit left node instead of just taking name
+                # if isinstance(node.lvalue, type): # check if lvalue is a var
+                self.pvisit(node.rvalue, node)
+                self._assignment(node.lvalue.name, node)
+            else:
+                raise NotImplementedError()
+        except Exception:
+            self.error("Could not assign to", node)
 
     def visit_BinaryOp(self, node):  # BinaryOp: [op, left*, right*]
         """Call on each BinaryOp visit."""
         self.pvisit(node.left, node)
         self.instr("PUSH %RA")
+        self.endl()
         self.pvisit(node.right, node)
         self.instr("POP %R0")
+        self.endl()
         if node.op == "+":
             self.instr("ADD %R0, %RA", "+")
         elif node.op == "-":
@@ -198,7 +206,10 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_Compound(self, node):  # Compound: [block_items**]
         """Call on each Compound visit."""
-        raise NotImplementedError()
+        scope = Scope()
+        self.set_scope(node, scope)
+        for c in node:
+            self.pvisit(c, node)
 
     def visit_CompoundLiteral(self, node):  # CompoundLiteral: [type*, init*]
         """Call on each CompoundLiteral visit."""
@@ -228,7 +239,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
         scope = self.get_closest_scope(node)
         if node.type.declname in scope.variables:
-            raise Exception(node.type.declname + " is already in scope!")
+            self.error(node.type.declname + " is already in scope!", node)
         scope.variables[node.type.declname] = scope.stack_index
         scope.stack_index += size_in_bytes
 
@@ -326,8 +337,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         """Call on each ID visit."""
         dist = self.get_variable_location(node.name, node)
         if dist is None:
-            raise Exception(node.name + " not found in scope")
-        self.instr("MOV %R12, %R0", "Getting value {0}".format(node.name))
+            self.error(node.name + " not found in scope", node)
+        self.instr("MOV %R12, %R0", "load " + node.name)
         self.instr("SUBI ${0}, %R0".format(dist))
         self.instr("LOAD %RA, %R0")
         self.endl()
@@ -374,6 +385,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_Return(self, node):  # Return: [expr*]
         """Call on each Return visit."""
+        if node.expr is None:
+            self.error("No value to return", node)
         self.pvisit(node.expr, node)
 
     def visit_Struct(self, node):  # Struct: [name, decls**]
@@ -461,8 +474,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         """Assign value to variable."""
         dist = self.get_variable_location(name, node)
         if dist is None:
-            raise Exception(name + " not found in scope")
-        self.instr("MOV %R12, %R0", "assignment")
+            self.error(node.name + " not found in scope", node)
+        self.instr("MOV %R12, %R0", "store " + name)
         self.instr("SUBI ${0}, %R0".format(dist))
         self.instr("STOR %RA, %R0")
         self.endl()
@@ -502,8 +515,15 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
                 self.to_be_commented = to_be_commented
 
     def endl(self, readability=2):
+        """Print new line in assembly."""
         if readability <= self.readability:
             self.assembly_data += "\n"
+
+    def error(self, message, node):
+        """Throw correct exception if error."""
+        # rse ParseError("line: {0}, No return value".format(node.coord.line))
+        print("line: {0}, {1}".format(node.coord.line, message))
+        sys.exit(3)
 
 
 def generate(ast, readability=0):

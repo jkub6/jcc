@@ -15,6 +15,6 @@ if __name__ == "__main__":
 
     ast = jcc.flow.parse_c_code(c_data,
                                 "tests/premade/stage_5/valid/exp_return.c")
-    assembly_data = jcc.flow.generate_assembly_code(ast)
+    assembly_data = jcc.flow.generate_assembly_code(ast, 3)
     clean_data = jcc.flow.clean_assembly(assembly_data)
     binary_data = jcc.flow.generate_binary_code(clean_data)
