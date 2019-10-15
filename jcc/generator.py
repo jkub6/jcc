@@ -331,6 +331,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         if node.decl.name == "main":
             if not self.found_return:
                 self.instr("MOVI $0, %RA")
+                self.instr("JUC {0}._cleanup".format(node.decl.name))
 
         self.label("{0}._cleanup".format(node.decl.name))
 
@@ -339,6 +340,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.instr("POP %R12")
         else:
             self.instr("JUC .end")
+        self.endl()
+        self.endl()
 
     def visit_Goto(self, node):  # Goto: [name]
         """Call on each Goto visit."""
