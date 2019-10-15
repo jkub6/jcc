@@ -107,9 +107,9 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         self.pvisit(node.right, node)
         self.instr("POP %R0")
         if node.op == "+":
-            self.instr("ADD %R0, %RA")
+            self.instr("ADD %R0, %RA", "+")
         elif node.op == "-":
-            self.instr("SUB %R0, %RA")
+            self.instr("SUB %R0, %RA", "-")
         elif node.op == "*":
             pass
         elif node.op == "/":
@@ -127,7 +127,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         elif node.op == ">>":
             pass
         elif node.op == "||":
-            self.instr("CMPI $0, %R0")
+            self.instr("CMPI $0, %R0", "||")
             self.instr("BEQ $0x4")
             self.instr("MOVI $1, %RA")
             self.instr("BUC $0x2")
@@ -137,7 +137,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.instr("BEQ $0x2")
             self.instr("MOVI $1, %RA")
         elif node.op == "&&":
-            self.instr("CMPI $0, %R0")
+            self.instr("CMPI $0, %R0", "&&")
             self.instr("BEQ $0x4")
             self.instr("MOVI $1, %RA")
             self.instr("BUC $0x2")
@@ -147,41 +147,42 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.instr("BNE $0x2")
             self.instr("MOVI $0, %RA")
         elif node.op == "<":
-            self.instr("CMP $RA, %R0")
+            self.instr("CMP $RA, %R0", "<")
             self.instr("BLT $0x4")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $0x2")
             self.instr("MOVI $1, %RA")
         elif node.op == "<=":
-            self.instr("CMP $RA, %R0")
+            self.instr("CMP $RA, %R0", "<=")
             self.instr("BLE $0x4")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $0x2")
             self.instr("MOVI $1, %RA")
         elif node.op == ">":
-            self.instr("CMP $RA, %R0")
+            self.instr("CMP $RA, %R0", ">")
             self.instr("BGT $0x4")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $0x2")
             self.instr("MOVI $1, %RA")
         elif node.op == ">=":
-            self.instr("CMP $RA, %R0")
+            self.instr("CMP $RA, %R0", ">=")
             self.instr("BGE $0x4")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $0x2")
             self.instr("MOVI $1, %RA")
         elif node.op == "==":
-            self.instr("CMP $RA, %R0")
+            self.instr("CMP $RA, %R0", "==")
             self.instr("BEQ $0x4")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $0x2")
             self.instr("MOVI $1, %RA")
         elif node.op == "!=":
-            self.instr("CMP $RA, %R0")
+            self.instr("CMP $RA, %R0", "!=")
             self.instr("BNE $0x4")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $0x2")
             self.instr("MOVI $1, %RA")
+        self.endl()
 
     def visit_Break(self, node):  # Break: []
         """Call on each Break visit."""
@@ -206,11 +207,12 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
     def visit_Constant(self, node):  # Constant: [type, value]
         """Call on each Constant visit."""
         if node.type == "int":
-            self.instr("MOVI ${0}, %RA".format(node.value))
+            self.instr("MOVI ${0}, %RA".format(node.value), "constant")
         elif node.type == "char":
             raise NotImplementedError()
         elif node.type == "float":
             raise NotImplementedError()
+        self.endl()
 
     def visit_Continue(self, node):  # Continue: []
         """Call on each Continue visit."""
@@ -221,6 +223,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         """Call on each Decl visit."""
         # check if short, then:
         size_in_bytes = 2
+
+        self.comment("declaring {0}".format(node.type.declname), readability=2)
 
         scope = self.get_closest_scope(node)
         if node.type.declname in scope.variables:
@@ -323,9 +327,10 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         dist = self.get_variable_location(node.name, node)
         if dist is None:
             raise Exception(node.name + " not found in scope")
-        self.instr("MOV %R12, %R0")
+        self.instr("MOV %R12, %R0", "Getting value {0}".format(node.name))
         self.instr("SUBI ${0}, %R0".format(dist))
         self.instr("LOAD %RA, %R0")
+        self.endl()
 
     def visit_IdentifierType(self, node):  # IdentifierType: [names]
         """Call on each IdentifierType visit."""
@@ -333,17 +338,19 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_If(self, node):  # If: [cond*, iftrue*, iffalse*]
         """Call on each If visit."""
+        if_num = self.num_ifs
+        self.num_ifs += 1
+
         self.pvisit(node.cond, node)
-        self.instr("CMPI 0, %RA", "if{0}".format(self.num_ifs))
-        self.instr("JNE .if{0}_else".format(self.num_ifs))
+        self.instr("CMPI 0, %RA", "if{0}".format(if_num))
+        self.instr("JNE .if{0}_else".format(if_num))
         self.pvisit(node.iftrue, node)
-        self.instr("JUC .if{0}_done".format(self.num_ifs))
-        self.label(".if{0}_else".format(self.num_ifs))
+        self.instr("JUC .if{0}_done".format(if_num))
+        self.label(".if{0}_else".format(if_num))
         if node.iffalse is not None:
             self.pvisit(node.iffalse, node)
-        self.label(".if{0}_done".format(self.num_ifs))
-
-        self.num_ifs += 1
+        self.label(".if{0}_done".format(if_num))
+        self.endl()
 
     def visit_InitList(self, node):  # InitList: [exprs**]
         """Call on each InitList visit."""
@@ -383,16 +390,18 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_TernaryOp(self, node):  # TernaryOp: [cond*, iftrue*, iffalse*]
         """Call on each TernaryOp visit."""
-        self.pvisit(node.cond, node)
-        self.instr("CMPI 0, %RA", "ter{0}".format(self.num_ternaries))
-        self.instr("JNE .ter{0}_false".format(self.num_ternaries))
-        self.pvisit(node.iftrue, node)
-        self.instr("JUC .ter{0}_done".format(self.num_ternaries))
-        self.label(".ter{0}_false".format(self.num_ternaries))
-        self.pvisit(node.iffalse, node)
-        self.label(".ter{0}_done".format(self.num_ternaries))
-
+        ter_num = self.num_ternaries
         self.num_ternaries += 1
+
+        self.pvisit(node.cond, node)
+        self.instr("CMPI 0, %RA", "ter{0}".format(ter_num))
+        self.instr("JNE .ter{0}_false".format(ter_num))
+        self.pvisit(node.iftrue, node)
+        self.instr("JUC .ter{0}_done".format(ter_num))
+        self.label(".ter{0}_false".format(ter_num))
+        self.pvisit(node.iffalse, node)
+        self.label(".ter{0}_done".format(ter_num))
+        self.endl()
 
     def visit_TypeDecl(self, node):  # TypeDecl: [declname, quals, type*]
         """Call on each TypeDecl visit."""
@@ -413,13 +422,13 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         if node.op == "+":
             pass  # do nothing on (+ expr)
         elif node.op == "-":
-            self.instr("MOVI $0, %R0")
+            self.instr("MOVI $0, %R0", "neg")
             self.instr("SUBI $RA, %R0")
             self.instr("MOV $R0, %RA")
         elif node.op == "~":
-            self.instr("XORI $65535, %RA")
+            self.instr("XORI $65535, %RA", "xor")
         elif node.op == "!":
-            self.instr("CMPI $0, %RA")
+            self.instr("CMPI $0, %RA", "!")
             self.instr("BEQ $0x4")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $0x2")
@@ -434,6 +443,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             raise NotImplementedError()
         else:
             raise Exception("Unknown Unary Operator:", node.op)
+        self.endl()
 
     def visit_Union(self, node):  # Union: [name, decls**]
         """Call on each Union visit."""
@@ -452,9 +462,10 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         dist = self.get_variable_location(name, node)
         if dist is None:
             raise Exception(name + " not found in scope")
-        self.instr("MOV %R12, %R0")
+        self.instr("MOV %R12, %R0", "assignment")
         self.instr("SUBI ${0}, %R0".format(dist))
         self.instr("STOR %RA, %R0")
+        self.endl()
 
     def generate(self, ast, readability):
         """Wrap visit and return result."""
@@ -489,6 +500,10 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
                 self.assembly_data += "    ; {0}\n".format(c)
             else:
                 self.to_be_commented = to_be_commented
+
+    def endl(self, readability=2):
+        if readability <= self.readability:
+            self.assembly_data += "\n"
 
 
 def generate(ast, readability=0):
