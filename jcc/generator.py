@@ -72,6 +72,14 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             node = self.get_parent(node)
         return None
 
+    def create_scope(self, node):
+        """Create a new scope for a node, and maintains previous index."""
+        scope = Scope()
+        prev_scope = self.get_closest_scope(node)
+        if prev_scope is not None:
+            scope.stack_index = prev_scope.stack_index
+        self.set_scope(node, scope)
+
     def get_closest_function(self, node):
         """Get the function that a node is inside of."""
         while node is not None:
@@ -216,8 +224,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_Compound(self, node):  # Compound: [block_items**]
         """Call on each Compound visit."""
-        scope = Scope()
-        self.set_scope(node, scope)
+        self.create_scope(node)
         for c in node:
             self.pvisit(c, node)
 
@@ -295,8 +302,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_FileAST(self, node):  # FileAST: [ext**]
         """Call on each FileAST visit."""
-        scope = Scope()
-        self.set_scope(node, scope)
+        self.create_scope(node)
         for c in node:
             self.pvisit(c, node)
 
@@ -316,8 +322,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         """Call on each FuncDef visit."""
         self.found_return = False
 
-        scope = Scope()  # add arguments to scope
-        self.set_scope(node, scope)
+        self.create_scope(node)
 
         self.label(node.decl.name)
         if node.decl.name != "main":

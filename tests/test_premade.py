@@ -73,8 +73,6 @@ skips = ["3div", "3mod", "3mult", "3parens", "3associativity_2", "3precedence",
          "4skip_on_failure_multi_short_circuit",
          "4skip_on_failure_short_circuit_and",
          "4skip_on_failure_short_circuit_or"]
-skips += ["7declare_after_block", "7declare_block", "7declare_late",
-          "7multi_nesting", "7nested_if", "7nested_scope"]
 stages = [i+1 for i in range(7)]
 parameters = []
 ids = []
