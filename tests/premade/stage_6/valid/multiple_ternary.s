@@ -5,9 +5,9 @@ main:
     MOVI $2, %RA
     POP %R0
     CMP $RA, %R0
-    BGT $0x4
+    BGT $2
     MOVI $0, %RA
-    BUC $0x2
+    BUC $1
     MOVI $1, %RA
     CMPI 0, %RA
     JNE .ter0_false
@@ -24,9 +24,9 @@ main:
     MOVI $2, %RA
     POP %R0
     CMP $RA, %R0
-    BGT $0x4
+    BGT $2
     MOVI $0, %RA
-    BUC $0x2
+    BUC $1
     MOVI $1, %RA
     CMPI 0, %RA
     JNE .ter1_false

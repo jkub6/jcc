@@ -8,7 +8,7 @@ main:
     SUBI $2, %R0
     LOAD %RA, %R0
     CMPI 0, %RA
-    JNE .if0_else
+    JEQ .if0_else
     MOVI $2, %RA
     MOV %R12, %R0
     SUBI $4, %R0
@@ -17,7 +17,7 @@ main:
     SUBI $4, %R0
     LOAD %RA, %R0
     JUC main._cleanup
-    JUC .if0_done
+    JUC .if0_end
 .if0_else:
     MOVI $3, %RA
     MOV %R12, %R0
@@ -32,20 +32,20 @@ main:
     LOAD %RA, %R0
     POP %R0
     CMP $RA, %R0
-    BLT $0x4
+    BLT $2
     MOVI $0, %RA
-    BUC $0x2
+    BUC $1
     MOVI $1, %RA
     CMPI 0, %RA
-    JNE .if1_else
+    JEQ .if1_else
     MOVI $4, %RA
     JUC main._cleanup
-    JUC .if1_done
+    JUC .if1_end
 .if1_else:
     MOVI $5, %RA
     JUC main._cleanup
-.if1_done:
-.if0_done:
+.if1_end:
+.if0_end:
     MOV %R12, %R0
     SUBI $2, %R0
     LOAD %RA, %R0

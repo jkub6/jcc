@@ -25,7 +25,7 @@ def clean(assembly_data):
             label = line[:-1]
             if label in labels:
                 raise Exception("duplicate label")
-            labels[label] = hex(2*count)
+            labels[label] = str(count)
         else:
             count += 1  # only increase count if none of above
             clean_data += line + "\n"

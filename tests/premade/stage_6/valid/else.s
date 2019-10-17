@@ -8,14 +8,14 @@ main:
     SUBI $2, %R0
     LOAD %RA, %R0
     CMPI 0, %RA
-    JNE .if0_else
+    JEQ .if0_else
     MOVI $1, %RA
     JUC main._cleanup
-    JUC .if0_done
+    JUC .if0_end
 .if0_else:
     MOVI $2, %RA
     JUC main._cleanup
-.if0_done:
+.if0_end:
 main._cleanup:
     JUC .end
 .end:

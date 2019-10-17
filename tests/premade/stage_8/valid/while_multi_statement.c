@@ -4,7 +4,7 @@ int main() {
 
     while (a < 5) {
         a = a + 2;
-        b = b * a;
+        b = b - a;
     }
 
     return a;

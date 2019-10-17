@@ -11,12 +11,12 @@ main:
     MOVI $3, %RA
     POP %R0
     CMP $RA, %R0
-    BLT $0x4
+    BLT $2
     MOVI $0, %RA
-    BUC $0x2
+    BUC $1
     MOVI $1, %RA
     CMPI 0, %RA
-    JNE .if0_else
+    JEQ .if0_else
     MOVI $3, %RA
     MOV %R12, %R0
     SUBI $4, %R0
@@ -29,9 +29,9 @@ main:
     SUBI $2, %R0
     LOAD %RA, %R0
     JUC main._cleanup
-    JUC .if0_done
+    JUC .if0_end
 .if0_else:
-.if0_done:
+.if0_end:
 main._cleanup:
     JUC .end
 .end:

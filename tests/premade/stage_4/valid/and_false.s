@@ -5,12 +5,12 @@ main:
     MOVI $0, %RA
     POP %R0
     CMPI $0, %R0
-    BEQ $0x4
+    BEQ $2
     MOVI $1, %RA
-    BUC $0x2
+    BUC $1
     MOVI $0, %RA
     CMPI $0, %RA
-    BNE $0x2
+    BNE $1
     MOVI $0, %RA
     JUC main._cleanup
 main._cleanup:

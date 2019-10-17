@@ -5,9 +5,9 @@ main:
     SUBI $RA, %R0
     MOV $R0, %RA
     CMPI $0, %RA
-    BEQ $0x4
+    BEQ $2
     MOVI $0, %RA
-    BUC $0x2
+    BUC $1
     MOVI $1, %RA
     JUC main._cleanup
 main._cleanup:

@@ -7,15 +7,15 @@ main:
     MOVI $0, %RA
     POP %R0
     CMP $RA, %R0
-    BGT $0x4
+    BGT $2
     MOVI $0, %RA
-    BUC $0x2
+    BUC $1
     MOVI $1, %RA
     POP %R0
     CMP $RA, %R0
-    BEQ $0x4
+    BEQ $2
     MOVI $0, %RA
-    BUC $0x2
+    BUC $1
     MOVI $1, %RA
     JUC main._cleanup
 main._cleanup:

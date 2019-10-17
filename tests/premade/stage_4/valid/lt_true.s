@@ -5,9 +5,9 @@ main:
     MOVI $2, %RA
     POP %R0
     CMP $RA, %R0
-    BLT $0x4
+    BLT $2
     MOVI $0, %RA
-    BUC $0x2
+    BUC $1
     MOVI $1, %RA
     JUC main._cleanup
 main._cleanup:
