@@ -7,31 +7,119 @@ This file is a part of Jake's C Compiler (JCC)
 
 import re
 
+from bitstring import Bits
+
 
 def clean(assembly_data):
     """Take assembly, Swap labels for addresses, remove whitespace, etc."""
-    labels = {}
+    start_values = {
+        "SP": 0xE000,
+        "BP": 0xE000,
+        "RA": 0x0000,
+        "T0": 0x0000,
+        "T1": 0x0000
+        }
 
-    # initial pass for label locations
+    # add reg stating values
+    temp_data = ""
+    for reg in start_values.keys():
+        bits = Bits(uint=start_values[reg], length=16)
+        temp_data += "LUI $0x{}, %{}\n".format(bits[:8].hex, reg)
+        temp_data += "ADDI $0x{}, %{}\n".format(bits[8:].hex, reg)
+    assembly_data = temp_data + assembly_data
+
+    # pass for cleaning
     count = 0
-    clean_data = ""
+    temp_data = ""
     for line in assembly_data.split("\n"):
         line = line.strip()
         line = line.split(";")[0]
         line = line.strip()
-        if line == "":  # if blank line or was a comment
+        if ":" in line:
+            temp_data += line.split(":")[0] + ":\n"
+            line = line.split(":")[1]
+        if line == "":  # if blank line or was a comment or label
             continue
+
+        cmd = line.split(" ")[0]
+        cmd = cmd.strip()
+
+        args = "".join(line.split(" ")[1:]).split(",")
+        for arg in args:
+            arg = arg.strip()
+
+        temp_data += cmd + " " + ", ".join(args) + "\n"
+    assembly_data = temp_data
+
+    # pass for pseudo commands
+    temp_data = ""
+    for line in assembly_data.split("\n"):
+        if line.startswith("PUSH"):
+            temp_data += "STOR" + line[4:] + ", %SP\n"
+            temp_data += "SUBI $2, %SP\n"
+            # temp_data += "STOR %RA, %SP\n"
+            # temp_data += "SUBI 2, %SP"
+        elif line.startswith("POP"):
+            temp_data += "LOAD" + line[3:] + ", %SP\n"
+            temp_data += "ADDI $2, %SP\n"
+            # temp_data += "LOAD %RA, %SP\n"
+            # temp_data += "ADDI 2, %SP"
+        else:
+            temp_data += line + "\n"
+    assembly_data = temp_data
+
+    # pass for makeing labels multi-line
+    count = 0
+    temp_data = ""
+    for line in assembly_data.split("\n"):
+        cmd = line.split(" ")[0]
+        cmd = cmd.strip()
+
+        if line.endswith(":"):
+            temp_data += line + "\n"
+            continue
+
+        args = "".join(line.split(" ")[1:]).split(",")
+        temp_args = []
+        for arg in args:
+            arg = arg.strip()
+            if arg.startswith("@"):
+                temp_data += "LUI @{}._high, %T1\n".format(arg[1:])
+                temp_data += "ADDI @{}._low, %T1\n".format(arg[1:])
+                arg = "%T1"
+                # raise Exception("fix me!!!")
+            temp_args.append(arg)
+        args = temp_args
+
+        temp_data += cmd + " " + ", ".join(args) + "\n"
+    assembly_data = temp_data
+
+    # pass for label locations
+    labels = {}
+    count = 0
+    temp_data = ""
+    for line in assembly_data.split("\n"):
         if line.endswith(":"):
             label = line[:-1]
             if label in labels:
                 raise Exception("duplicate label")
-            labels[label] = str(count)
+            labels[label] = count
         else:
             count += 1  # only increase count if none of above
-            clean_data += line + "\n"
+            temp_data += line + "\n"
+    assembly_data = temp_data
 
-    # second pass for replacing
+    assembly_data = assembly_data.strip()
+
+    # loop and replace labels
     for label in labels:
-        clean_data = re.sub("(?<=(\\s|,))" + label + "(?=(,|\\n))",
-                            "$" + labels[label], clean_data)
-    return clean_data
+        loc = Bits(uint=labels[label], length=16)
+        assembly_data = re.sub("(?<=(\\s|,))@" + label + "\\._high(?=(,|\\n))",
+                               "$0x" + loc[:8].hex, assembly_data)
+        assembly_data = re.sub("(?<=(\\s|,))@" + label + "\\._low(?=(,|\\n))",
+                               "$0x" + loc[8:].hex, assembly_data)
+
+    # add infinite loop at end
+    assembly_data += "\nBUC $-1\n"
+
+    return assembly_data
