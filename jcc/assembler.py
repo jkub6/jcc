@@ -86,7 +86,7 @@ reg_map = {
     }
 
 
-def assemble(assembly_data):
+def assemble(assembly_data, zeros=True):
     """Create binary code from cleaned assembly."""
     binary_data = ""
 
@@ -159,5 +159,10 @@ def assemble(assembly_data):
         else:
             binary_data += "Error, command not found: " + cmd_str + "\n"
             # raise Exception("Error, command not found: " + cmd)
+
+    if zeros:  # pack end with zeros if desired
+        while lines < 0xFFFF:
+            binary_data += "00\n"
+            lines += 1
 
     return binary_data

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to JCC’s documentation! &mdash; JCC 0.0.1 documentation</title>
+  <title>Setup &mdash; JCC 0.0.1 documentation</title>
   
 
   
@@ -35,7 +35,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Setup" href="setup.html" /> 
+    <link rel="next" title="Usage" href="usage.html" />
+    <link rel="prev" title="Welcome to JCC’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -49,7 +50,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> JCC
+            <a href="index.html" class="icon icon-home"> JCC
           
 
           
@@ -80,8 +81,8 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 </ul>
 
@@ -97,7 +98,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">JCC</a>
+          <a href="index.html">JCC</a>
         
       </nav>
 
@@ -126,15 +127,15 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Welcome to JCC’s documentation!</li>
+      <li>Setup</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/setup.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -147,23 +148,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="welcome-to-jcc-s-documentation">
-<h1>Welcome to JCC’s documentation!<a class="headerlink" href="#welcome-to-jcc-s-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-</ul>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="setup">
+<h1>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h1>
+<p>Requirements:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<li><p>Python 3.7</p></li>
+<li><p>pipenv (<cite>pip install pipenv</cite>)</p></li>
 </ul>
+<p>Open jcc directory and install dependencies with pipenv:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pipenv install</span>
+</pre></div>
+</div>
+<p>For development dependencies (unit testing, etc…) (if required)</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pipenv install --dev</span>
+</pre></div>
+</div>
+<p>Create pipenv virtual environment</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pipenv shell</span>
+</pre></div>
+</div>
+<p>If you would like to use the verilog unit test functionality,
+Icarus-verilog must be installed (Linux only).</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt-get install iverilog</span>
+</pre></div>
+</div>
+<p>Setup should now be complete. The program can be run as
+<cite>pipenv run python main.py</cite>, or this can be compiled to
+an executable with <cite>pipenv run pyinstaller –onefile jcc.spec</cite>
+(only works if dev libraries installed)</p>
 </div>
 
 
@@ -174,8 +186,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="setup.html" class="btn btn-neutral float-right" title="Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to JCC’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
