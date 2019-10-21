@@ -1,11 +1,13 @@
     JUC @main
 main:
-    MOVI $2, %RA
-    XORI $65535, %RA
+    LUI $0x00, %RA
+    ADDI $0x02, %RA
+    XORI $-1, %RA
     PUSH %RA
-    MOVI $3, %RA
-    POP %R0
-    ADD %R0, %RA
+    LUI $0x00, %RA
+    ADDI $0x03, %RA
+    POP %T0
+    ADD %T0, %RA
     JUC @main._cleanup
 main._cleanup:
     JUC @.end

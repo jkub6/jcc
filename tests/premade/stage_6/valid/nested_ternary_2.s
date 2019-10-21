@@ -1,50 +1,68 @@
     JUC @main
 main:
-    MOVI $1, %RA
-    CMPI 0, %RA
-    JNE .ter0_false
-    MOVI $2, %RA
-    CMPI 0, %RA
-    JNE .ter1_false
-    MOVI $3, %RA
-    JUC .ter1_done
+    LUI $0x00, %RA
+    ADDI $0x01, %RA
+    CMPI $0, %RA
+    JNE @.ter0_false
+    LUI $0x00, %RA
+    ADDI $0x02, %RA
+    CMPI $0, %RA
+    JNE @.ter1_false
+    LUI $0x00, %RA
+    ADDI $0x03, %RA
+    JUC @.ter1_done
 .ter1_false:
-    MOVI $4, %RA
+    LUI $0x00, %RA
+    ADDI $0x04, %RA
 .ter1_done:
-    JUC .ter0_done
+    JUC @.ter0_done
 .ter0_false:
-    MOVI $5, %RA
+    LUI $0x00, %RA
+    ADDI $0x05, %RA
 .ter0_done:
-    MOV %R12, %R0
-    SUBI $2, %R0
-    STOR %RA, %R0
-    MOVI $0, %RA
-    CMPI 0, %RA
-    JNE .ter2_false
-    MOVI $2, %RA
-    CMPI 0, %RA
-    JNE .ter3_false
-    MOVI $3, %RA
-    JUC .ter3_done
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x02, %T1
+    SUB %T1, %T0
+    STOR %RA, %T0
+    LUI $0x00, %RA
+    ADDI $0x00, %RA
+    CMPI $0, %RA
+    JNE @.ter2_false
+    LUI $0x00, %RA
+    ADDI $0x02, %RA
+    CMPI $0, %RA
+    JNE @.ter3_false
+    LUI $0x00, %RA
+    ADDI $0x03, %RA
+    JUC @.ter3_done
 .ter3_false:
-    MOVI $4, %RA
+    LUI $0x00, %RA
+    ADDI $0x04, %RA
 .ter3_done:
-    JUC .ter2_done
+    JUC @.ter2_done
 .ter2_false:
-    MOVI $5, %RA
+    LUI $0x00, %RA
+    ADDI $0x05, %RA
 .ter2_done:
-    MOV %R12, %R0
-    SUBI $4, %R0
-    STOR %RA, %R0
-    MOV %R12, %R0
-    SUBI $2, %R0
-    LOAD %RA, %R0
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x04, %T1
+    SUB %T1, %T0
+    STOR %RA, %T0
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x02, %T1
+    SUB %T1, %T0
+    LOAD %RA, %T0
     PUSH %RA
-    MOV %R12, %R0
-    SUBI $4, %R0
-    LOAD %RA, %R0
-    POP %R0
-    ADD %R0, %RA
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x04, %T1
+    SUB %T1, %T0
+    LOAD %RA, %T0
+    POP %T0
+    ADD %T0, %RA
     JUC @main._cleanup
 main._cleanup:
     JUC @.end

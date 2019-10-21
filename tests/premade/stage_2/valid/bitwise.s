@@ -1,6 +1,7 @@
     JUC @main
 main:
-    MOVI $12, %RA
+    LUI $0x00, %RA
+    ADDI $0x0c, %RA
     CMPI $0, %RA
     BEQ $2
     MOVI $0, %RA

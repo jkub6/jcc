@@ -1,6 +1,7 @@
     JUC @main
 main:
-    MOVI $2, %RA
+    LUI $0x00, %RA
+    ADDI $0x02, %RA
     JUC @main._cleanup
 main._cleanup:
     JUC @.end

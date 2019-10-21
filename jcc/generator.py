@@ -175,37 +175,37 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.instr("BNE $1")
             self.instr("MOVI $0, %RA")
         elif node.op == "<":
-            self.instr("CMP $RA, %T0", "<")
+            self.instr("CMP %RA, %T0", "<")
             self.instr("BLT $2")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $1")
             self.instr("MOVI $1, %RA")
         elif node.op == "<=":
-            self.instr("CMP $RA, %T0", "<=")
+            self.instr("CMP %RA, %T0", "<=")
             self.instr("BLE $2")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $1")
             self.instr("MOVI $1, %RA")
         elif node.op == ">":
-            self.instr("CMP $RA, %T0", ">")
+            self.instr("CMP %RA, %T0", ">")
             self.instr("BGT $2")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $1")
             self.instr("MOVI $1, %RA")
         elif node.op == ">=":
-            self.instr("CMP $RA, %T0", ">=")
+            self.instr("CMP %RA, %T0", ">=")
             self.instr("BGE $2")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $1")
             self.instr("MOVI $1, %RA")
         elif node.op == "==":
-            self.instr("CMP $RA, %T0", "==")
+            self.instr("CMP %RA, %T0", "==")
             self.instr("BEQ $2")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $1")
             self.instr("MOVI $1, %RA")
         elif node.op == "!=":
-            self.instr("CMP $RA, %T0", "!=")
+            self.instr("CMP %RA, %T0", "!=")
             self.instr("BNE $2")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $1")
@@ -364,7 +364,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.error(node.name + " not found in scope", node)
         self.instr("MOV %BP, %T0", "load " + node.name)
         self._constant(dist, "T1", unsigned=True)
-        self.instr("SUB $T1, %T0") #todo make subu
+        self.instr("SUB %T1, %T0") #todo make subu
         self.instr("LOAD %RA, %T0")
         self.endl()
 
@@ -464,8 +464,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             pass  # do nothing on (+ expr)
         elif node.op == "-":
             self.instr("MOVI $0, %T0", "neg")
-            self.instr("SUB $RA, %T0")
-            self.instr("MOV $R0, %RA")
+            self.instr("SUB %RA, %T0")
+            self.instr("MOV %T0, %RA")
         elif node.op == "~":
             self.instr("XORI $-1, %RA", "xor")
         elif node.op == "!":
@@ -515,7 +515,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.error(node.name + " not found in scope", node)
         self.instr("MOV %BP, %T0", "store " + name)
         self._constant(dist, "T1", unsigned=True)
-        self.instr("SUB $T1, %T0") #todo make sub u
+        self.instr("SUB %T1, %T0") #todo make sub u
         self.instr("STOR %RA, %T0")
         self.endl()
 

@@ -1,9 +1,10 @@
     JUC @main
 main:
-    MOVI $3, %RA
-    MOVI $0, %R0
-    SUBI $RA, %R0
-    MOV $R0, %RA
+    LUI $0x00, %RA
+    ADDI $0x03, %RA
+    MOVI $0, %T0
+    SUB %RA, %T0
+    MOV %T0, %RA
     CMPI $0, %RA
     BEQ $2
     MOVI $0, %RA

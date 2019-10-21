@@ -1,54 +1,75 @@
     JUC @main
 main:
-    MOVI $0, %RA
-    MOV %R12, %R0
-    SUBI $2, %R0
-    STOR %RA, %R0
-    MOV %R12, %R0
-    SUBI $2, %R0
-    LOAD %RA, %R0
-    CMPI 0, %RA
-    JEQ .if0_else
-    MOVI $2, %RA
-    MOV %R12, %R0
-    SUBI $4, %R0
-    STOR %RA, %R0
-    MOV %R12, %R0
-    SUBI $4, %R0
-    LOAD %RA, %R0
+    LUI $0x00, %RA
+    ADDI $0x00, %RA
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x02, %T1
+    SUB %T1, %T0
+    STOR %RA, %T0
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x02, %T1
+    SUB %T1, %T0
+    LOAD %RA, %T0
+    CMPI $0, %RA
+    JEQ @.if0_else
+    LUI $0x00, %RA
+    ADDI $0x02, %RA
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x04, %T1
+    SUB %T1, %T0
+    STOR %RA, %T0
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x04, %T1
+    SUB %T1, %T0
+    LOAD %RA, %T0
     JUC @main._cleanup
-    JUC .if0_end
+    JUC @.if0_end
 .if0_else:
-    MOVI $3, %RA
-    MOV %R12, %R0
-    SUBI $4, %R0
-    STOR %RA, %R0
-    MOV %R12, %R0
-    SUBI $2, %R0
-    LOAD %RA, %R0
+    LUI $0x00, %RA
+    ADDI $0x03, %RA
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x04, %T1
+    SUB %T1, %T0
+    STOR %RA, %T0
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x02, %T1
+    SUB %T1, %T0
+    LOAD %RA, %T0
     PUSH %RA
-    MOV %R12, %R0
-    SUBI $4, %R0
-    LOAD %RA, %R0
-    POP %R0
-    CMP $RA, %R0
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x04, %T1
+    SUB %T1, %T0
+    LOAD %RA, %T0
+    POP %T0
+    CMP %RA, %T0
     BLT $2
     MOVI $0, %RA
     BUC $1
     MOVI $1, %RA
-    CMPI 0, %RA
-    JEQ .if1_else
-    MOVI $4, %RA
+    CMPI $0, %RA
+    JEQ @.if1_else
+    LUI $0x00, %RA
+    ADDI $0x04, %RA
     JUC @main._cleanup
-    JUC .if1_end
+    JUC @.if1_end
 .if1_else:
-    MOVI $5, %RA
+    LUI $0x00, %RA
+    ADDI $0x05, %RA
     JUC @main._cleanup
 .if1_end:
 .if0_end:
-    MOV %R12, %R0
-    SUBI $2, %R0
-    LOAD %RA, %R0
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x02, %T1
+    SUB %T1, %T0
+    LOAD %RA, %T0
     JUC @main._cleanup
 main._cleanup:
     JUC @.end

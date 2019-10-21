@@ -1,22 +1,32 @@
     JUC @main
 main:
-    MOVI $1, %RA
-    MOV %R12, %R0
-    SUBI $2, %R0
-    STOR %RA, %R0
-    MOVI $2, %RA
-    MOV %R12, %R0
-    SUBI $4, %R0
-    STOR %RA, %R0
-    MOV %R12, %R0
-    SUBI $2, %R0
-    LOAD %RA, %R0
+    LUI $0x00, %RA
+    ADDI $0x01, %RA
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x02, %T1
+    SUB %T1, %T0
+    STOR %RA, %T0
+    LUI $0x00, %RA
+    ADDI $0x02, %RA
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x04, %T1
+    SUB %T1, %T0
+    STOR %RA, %T0
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x02, %T1
+    SUB %T1, %T0
+    LOAD %RA, %T0
     PUSH %RA
-    MOV %R12, %R0
-    SUBI $4, %R0
-    LOAD %RA, %R0
-    POP %R0
-    ADD %R0, %RA
+    MOV %BP, %T0
+    LUI $0x00, %T1
+    ADDI $0x04, %T1
+    SUB %T1, %T0
+    LOAD %RA, %T0
+    POP %T0
+    ADD %T0, %RA
     JUC @main._cleanup
 main._cleanup:
     JUC @.end
