@@ -4,7 +4,7 @@ Development requirments: icarus-verilog
 
 [Download precompiled exe here](https://github.com/jkub6/jcc/releases)
 
-[JCC Dcumentation](https://jkub6.github.io/jcc)
+[JCC Dcumentation](https://jkub6.github.io/jcc) (todo)
 
 Compiles from the C language into assembly, and can then assemble to a binary file.
 
