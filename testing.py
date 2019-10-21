@@ -11,10 +11,10 @@ from pycparser import c_ast
 
 if __name__ == "__main__":
     jcc.flow.VERBOSE = True
-    c_data = jcc.flow.read_file("tests/premade/stage_1/valid/bin_num.c")
+    c_data = jcc.flow.read_file("tests/premade/stage_8/valid/break_in_while.c")
 
     ast = jcc.flow.parse_c_code(c_data,
-                                "tests/premade/stage_1/valid/bin_num.c")
+                                "tests/premade/stage_8/valid/bin_num.c")
     assembly_data = jcc.flow.generate_assembly_code(ast, 3)
     clean_data = jcc.flow.clean_assembly(assembly_data)
     binary_data = jcc.flow.generate_binary_code(clean_data)

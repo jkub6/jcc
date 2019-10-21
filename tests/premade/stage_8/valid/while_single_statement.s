@@ -7,7 +7,7 @@ main:
     ADDI $0x02, %T1
     SUB %T1, %T0
     STOR %RA, %T0
-.whi0_begin:
+.loop0_begin:
     MOV %BP, %T0
     LUI $0x00, %T1
     ADDI $0x02, %T1
@@ -23,7 +23,7 @@ main:
     BUC $1
     MOVI $1, %RA
     CMPI $0, %RA
-    JEQ @.whi0_end
+    JEQ @.loop0_end
     MOV %BP, %T0
     LUI $0x00, %T1
     ADDI $0x02, %T1
@@ -39,8 +39,8 @@ main:
     ADDI $0x02, %T1
     SUB %T1, %T0
     STOR %RA, %T0
-    JUC @.whi0_begin
-.whi0_end:
+    JUC @.loop0_begin
+.loop0_end:
     MOV %BP, %T0
     LUI $0x00, %T1
     ADDI $0x02, %T1

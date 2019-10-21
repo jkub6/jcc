@@ -40,6 +40,7 @@ optional arguments:
 * Does not currently short circuit logical operations
 * currently only scope for compounds, functions, and files
 * Need to add for if? <- add test
+* Continnue in for loops may be broken <- add test
 
 ## Compiler Reference Documents
 

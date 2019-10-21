@@ -76,9 +76,14 @@ skips = ["3div", "3mod", "3mult", "3parens", "3associativity_2", "3precedence",
 skips += ["8break", "8continue_empty_post", "8continue", "8do_while",
           "8empty_expression", "8for_decl", "8for_empty", "8for_nested_scope",
           "8for_variable_shadow", "8for", "8nested_break"]
-skips += ["8nested_while", "8return_in_while", "8while_multi_statement"]
+skips += ["8nested_while"]
+skips += ["9expression_args", "9fib", "9forward_decl_args", 
+          "9forward_decl_multi_arg", "9forward_decl",
+          "9fun_in_expr", "9hello_world", "9later_decl", "9multi_arg",
+          "9mutual_recursion", "9no_arg", "9precedence",
+          "9rename_function_param", "9single_arg", "9variable_as_arg"]
 skips += ["1bin_num", "1hex_num"]
-stages = [i+1 for i in range(8)]
+stages = [i+1 for i in range(9)]
 parameters = []
 ids = []
 for stage in stages:
@@ -114,10 +119,10 @@ def test(stage, fileGroup, phase):
             assert binary_file.read() == fileGroup.binary_data
 
 
-stages_inv = [i+1 for i in range(7)]
+stages_inv = [i+1 for i in range(9)]
 parameters_inv = []
 ids_inv = []
-skips_inv = ["3malformed_paren"]
+skips_inv = ["3malformed_paren", "8out_of_scope_do_while"]
 for stage in stages_inv:
     for fileGroup in load_files(stage, False):
         parameters_inv.append((stage, fileGroup))

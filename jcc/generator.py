@@ -44,7 +44,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
         self.num_ternaries = 0
         self.num_ifs = 0
-        self.num_whiles = 0
+        self.num_loops = 0
         self.found_return = False
 
     def get_parent(self, node):
@@ -214,7 +214,13 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_Break(self, node):  # Break: []
         """Call on each Break visit."""
-        raise NotImplementedError()
+        loop_num = self.num_loops - 1
+        self.num_loops -= 1
+
+        if loop_num == -1:
+            self.error("Error, break statement outside of loop", node)
+
+        self.instr("JUC @.loop{0}_end".format(loop_num), "break")
 
     def visit_Case(self, node):  # Case: [expr*, stmts**]
         """Call on each Case visit."""
@@ -249,7 +255,13 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_Continue(self, node):  # Continue: []
         """Call on each Continue visit."""
-        raise NotImplementedError()
+        loop_num = self.num_loops - 1
+        self.num_loops -= 1
+
+        if loop_num == -1:
+            self.error("Error, continue statement outside of loop", node)
+
+        self.instr("JUC @.loop{0}_begin".format(loop_num), "continue")
 
     def visit_Decl(self, node):  # TODO make work with bitsizes
         # Decl: [name, quals, storage, funcspec, type*, init*, bitsize*]
@@ -492,16 +504,16 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_While(self, node):  # While: [cond*, stmt*]
         """Call on each While visit."""
-        while_num = self.num_whiles
-        self.num_whiles += 1
+        loop_num = self.num_loops
+        self.num_loops += 1
 
-        self.label(".whi{0}_begin".format(while_num))
+        self.label(".loop{0}_begin".format(loop_num))
         self.pvisit(node.cond, node)
-        self.instr("CMPI $0, %RA", "whi{0}".format(while_num))
-        self.instr("JEQ @.whi{0}_end".format(while_num))
+        self.instr("CMPI $0, %RA", "loop{0}".format(loop_num))
+        self.instr("JEQ @.loop{0}_end".format(loop_num))
         self.pvisit(node.stmt, node)
-        self.instr("JUC @.whi{0}_begin".format(while_num))
-        self.label(".whi{0}_end".format(while_num))
+        self.instr("JUC @.loop{0}_begin".format(loop_num))
+        self.label(".loop{0}_end".format(loop_num))
         self.endl()
 
     def visit_Pragma(self, node):  # Pragma: [string]
