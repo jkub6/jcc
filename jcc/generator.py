@@ -364,7 +364,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.error(node.name + " not found in scope", node)
         self.instr("MOV %BP, %T0", "load " + node.name)
         self._constant(dist, "T1", unsigned=True)
-        self.instr("SUBU $T1, %T0")
+        self.instr("SUB $T1, %T0") #todo make subu
         self.instr("LOAD %RA, %T0")
         self.endl()
 
@@ -515,7 +515,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.error(node.name + " not found in scope", node)
         self.instr("MOV %BP, %T0", "store " + name)
         self._constant(dist, "T1", unsigned=True)
-        self.instr("SUBU $T1, %T0")
+        self.instr("SUB $T1, %T0") #todo make sub u
         self.instr("STOR %RA, %T0")
         self.endl()
 
@@ -533,6 +533,9 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
                 bits = Bits(uint=int(value), length=16)
             else:
                 bits = Bits(int=int(value), length=16)
+
+        if bits.length == 2:
+            bits = Bits(int=bits.int, length=16)
 
         self.instr("LUI $0x{}, %{}".format(bits[:8].hex, reg))
         self.instr("ADDI $0x{}, %{}".format(bits[8:].hex, reg))

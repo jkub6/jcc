@@ -1,4 +1,4 @@
-    JUC main
+    JUC @main
 main:
     MOVI $2, %RA
     MOV %R12, %R0
@@ -22,7 +22,7 @@ main:
 .ter0_false:
     MOVI $5, %RA
 .ter0_done:
-    JUC main._cleanup
+    JUC @main._cleanup
 main._cleanup:
-    JUC .end
+    JUC @.end
 .end:

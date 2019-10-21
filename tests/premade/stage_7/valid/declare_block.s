@@ -1,4 +1,4 @@
-    JUC main
+    JUC @main
 main:
     MOVI $5, %RA
     CMPI 0, %RA
@@ -10,10 +10,10 @@ main:
     MOV %R12, %R0
     SUBI $2, %R0
     LOAD %RA, %R0
-    JUC main._cleanup
+    JUC @main._cleanup
     JUC .if0_end
 .if0_else:
 .if0_end:
 main._cleanup:
-    JUC .end
+    JUC @.end
 .end:

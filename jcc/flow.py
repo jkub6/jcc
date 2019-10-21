@@ -41,22 +41,22 @@ def parse_args(run_with_args=None):
 
     argparser.add_argument("-A", "--assemby_output",
                            metavar="assembly_output_file",
-                           dest="assemby_output_filename", default="out.s",
+                           dest="assemby_output_filename", default="./out.s",
                            help="assembly output file location")
     argparser.add_argument("-L", "--cleaned_output",
                            metavar="cleaned_output_file",
-                           dest="cleaned_output_filename", default="out.scl",
+                           dest="cleaned_output_filename", default="./out.scl",
                            help="cleaned assembly output file location")
     argparser.add_argument("-B", "--binary_output",
                            metavar="binary_output_file",
-                           dest="binary_output_filename", default="out.dat",
+                           dest="binary_output_filename", default="./out.dat",
                            help="binary output file location")
 
  #   argparser.add_argument("-r", "--readability", action="store_true",
  #                          help="level (0-3) of assembly code readability" +
  #                               "comments, spacing, etc...")
     argparser.add_argument('-r', '--readability', required=False, type=int,
-                           choices=range(0, 3), metavar="[0-3]",
+                           choices=range(0, 4), metavar="[0-3]",
                            help="level (0-3) of assembly code readability \
                                 comments, spacing, etc...", default=0)
 

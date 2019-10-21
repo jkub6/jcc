@@ -77,6 +77,7 @@ skips += ["8break", "8continue_empty_post", "8continue", "8do_while",
           "8empty_expression", "8for_decl", "8for_empty", "8for_nested_scope",
           "8for_variable_shadow", "8for", "8nested_break"]
 skips += ["8nested_while", "8return_in_while", "8while_multi_statement"]
+skips += ["1bin_num", "1hex_num"]
 stages = [i+1 for i in range(8)]
 parameters = []
 ids = []

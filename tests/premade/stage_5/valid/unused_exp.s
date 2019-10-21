@@ -1,4 +1,4 @@
-    JUC main
+    JUC @main
 main:
     MOVI $2, %RA
     PUSH %RA
@@ -6,7 +6,7 @@ main:
     POP %R0
     ADD %R0, %RA
     MOVI $0, %RA
-    JUC main._cleanup
+    JUC @main._cleanup
 main._cleanup:
-    JUC .end
+    JUC @.end
 .end:

@@ -1,4 +1,4 @@
-    JUC main
+    JUC @main
 main:
     MOVI $1, %RA
     PUSH %RA
@@ -23,7 +23,7 @@ main:
     CMPI $0, %RA
     BNE $1
     MOVI $0, %RA
-    JUC main._cleanup
+    JUC @main._cleanup
 main._cleanup:
-    JUC .end
+    JUC @.end
 .end:

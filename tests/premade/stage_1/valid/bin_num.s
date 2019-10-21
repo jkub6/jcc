@@ -1,7 +1,7 @@
-    JUC main
+    JUC @main
 main:
     MOVI $0b10, %RA
-    JUC main._cleanup
+    JUC @main._cleanup
 main._cleanup:
-    JUC .end
+    JUC @.end
 .end:

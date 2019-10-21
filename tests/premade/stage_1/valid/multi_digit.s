@@ -1,7 +1,8 @@
-    JUC main
+    JUC @main
 main:
-    MOVI $100, %RA
-    JUC main._cleanup
+    LUI $0x00, %RA
+    ADDI $0x64, %RA
+    JUC @main._cleanup
 main._cleanup:
-    JUC .end
+    JUC @.end
 .end:
