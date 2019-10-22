@@ -52,9 +52,9 @@ def parse_args(run_with_args=None):
                            dest="binary_output_filename", default="./out.dat",
                            help="binary output file location")
 
- #   argparser.add_argument("-r", "--readability", action="store_true",
- #                          help="level (0-3) of assembly code readability" +
- #                               "comments, spacing, etc...")
+#   argparser.add_argument("-r", "--readability", action="store_true",
+#                          help="level (0-3) of assembly code readability" +
+#                               "comments, spacing, etc...")
     argparser.add_argument('-r', '--readability', required=False, type=int,
                            choices=range(0, 4), metavar="[0-3]",
                            help="level (0-3) of assembly code readability \
@@ -146,8 +146,11 @@ def generate_binary_code(clean_data):
     """Generate binary code from assembly code."""
     vprint("[assembling to binary file]")
     binary_data = jcc.assembler.assemble(clean_data)
+    short_data = binary_data.strip("00\n")
     vprint("[generated binary data begin]\n")
-    vprint(binary_data)
+    diff = len(binary_data) - len(short_data)
+    diff = int(diff/3)
+    vprint(short_data + "\n(" + str(diff) + " blank lines truncated)...")
     vprint("[generated binary data end]")
     return binary_data
 

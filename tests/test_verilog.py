@@ -9,7 +9,7 @@ import pytest
 from cocotb_test.run import run
 
 
-@pytest.mark.skip("Don't have Verilog Processor code yet")
+# @pytest.mark.skip("Don't have Verilog Processor code yet")
 def test_dff():  # test
     """Test running verilog testbench."""
     run(
