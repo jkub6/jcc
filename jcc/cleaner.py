@@ -42,7 +42,7 @@ def clean(assembly_data):
             continue
 
         cmd = line.split(" ")[0]
-        cmd = cmd.strip()
+        cmd = cmd.strip().upper()
 
         args = "".join(line.split(" ")[1:]).split(",")
         for arg in args:
@@ -56,12 +56,12 @@ def clean(assembly_data):
     for line in assembly_data.split("\n"):
         if line.startswith("PUSH"):
             temp_data += "STOR" + line[4:] + ", %SP\n"
-            temp_data += "SUBI $2, %SP\n"
+            temp_data += "SUBI $1, %SP\n"
             # temp_data += "STOR %RA, %SP\n"
             # temp_data += "SUBI 2, %SP"
         elif line.startswith("POP"):
             temp_data += "LOAD" + line[3:] + ", %SP\n"
-            temp_data += "ADDI $2, %SP\n"
+            temp_data += "ADDI $1, %SP\n"
             # temp_data += "LOAD %RA, %SP\n"
             # temp_data += "ADDI 2, %SP"
         else:

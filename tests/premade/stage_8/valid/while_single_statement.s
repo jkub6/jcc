@@ -4,13 +4,13 @@ main:
     ADDI $0x00, %RA
     MOV %BP, %T0
     LUI $0x00, %T1
-    ADDI $0x02, %T1
+    ADDI $0x01, %T1
     SUB %T1, %T0
     STOR %RA, %T0
 .loop0_begin:
     MOV %BP, %T0
     LUI $0x00, %T1
-    ADDI $0x02, %T1
+    ADDI $0x01, %T1
     SUB %T1, %T0
     LOAD %RA, %T0
     PUSH %RA
@@ -26,7 +26,7 @@ main:
     JEQ @.loop0_end
     MOV %BP, %T0
     LUI $0x00, %T1
-    ADDI $0x02, %T1
+    ADDI $0x01, %T1
     SUB %T1, %T0
     LOAD %RA, %T0
     PUSH %RA
@@ -36,14 +36,14 @@ main:
     ADD %T0, %RA
     MOV %BP, %T0
     LUI $0x00, %T1
-    ADDI $0x02, %T1
+    ADDI $0x01, %T1
     SUB %T1, %T0
     STOR %RA, %T0
     JUC @.loop0_begin
 .loop0_end:
     MOV %BP, %T0
     LUI $0x00, %T1
-    ADDI $0x02, %T1
+    ADDI $0x01, %T1
     SUB %T1, %T0
     LOAD %RA, %T0
     JUC @main._cleanup

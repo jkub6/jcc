@@ -20,7 +20,13 @@ standard_commands = {
     "LOAD": (0b0100, 0b0000),
     "STOR": (0b0100, 0b0100),
     "JAL": (0b0100, 0b1000),
-    "CLK": (0b0000, 0b0100)
+    "ADDU": (0b0000, 0b0110),
+    "ADDC": (0b0000, 0b0111),
+    "MUL": (0b0000, 0b1110),
+    "SUBC": (0b0000, 0b1010),
+    "NOT": (0b0000, 0b0100),
+    "SAR": (0b1000, 0b1000)
+    # "CLK": (0b0000, 0b0100)
     }
 
 immediate_commands = {
@@ -31,7 +37,9 @@ immediate_commands = {
     "ORI": 0b0010,
     "XORI": 0b0011,
     "MOVI": 0b1101,
-    "LUI": 0b1111
+    "LUI": 0b1111,
+    "SUBCI": 0b1010,
+    "MULI": 0b1110
     }
 
 special_commands = {
@@ -39,6 +47,7 @@ special_commands = {
     "LSHI2": (0b1000, 0b0001),
     "B": 0b1100,
     "J": (0b0100, 0b1100),
+    "S": (0b0100, 0b1101)
     }
 
 condition_codes = {

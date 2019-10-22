@@ -41,6 +41,8 @@ optional arguments:
 * currently only scope for compounds, functions, and files
 * Need to add for if? <- add test
 * Continnue in for loops may be broken <- add test
+* add test for mul, xor, or, and, and shifts.
+* test for BP differential in function call.
 
 ## Compiler Reference Documents
 

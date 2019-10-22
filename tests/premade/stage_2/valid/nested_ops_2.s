@@ -2,7 +2,7 @@
 main:
     LUI $0x00, %RA
     ADDI $0x00, %RA
-    XORI $-1, %RA
+    NOT %RA, %RA
     MOVI $0, %T0
     SUB %RA, %T0
     MOV %T0, %RA

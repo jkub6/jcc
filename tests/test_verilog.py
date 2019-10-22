@@ -5,9 +5,11 @@ This file is a part of Jake's C Compiler (JCC)
 (c) Copyright 2019 Jacob Larkin
 """
 
+import pytest
 from cocotb_test.run import run
 
 
+@pytest.mark.skip("Don't have Verilog Processor code yet")
 def test_dff():  # test
     """Test running verilog testbench."""
     run(

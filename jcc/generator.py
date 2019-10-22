@@ -19,7 +19,7 @@ class Scope:
     def __init__(self):
         """Override default constructor."""
         self.variables = {}
-        self.stack_index = 2
+        self.stack_index = 1
 
 
 class NodeData:
@@ -101,7 +101,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         return None
 
     def pvisit(self, node, parent):
-        """Wrap visit function, but set parent."""
+        """Wrap visit function, but set."""
         self.node_data_lookup[node] = NodeData(parent)
         self.visit(node)
 
@@ -139,17 +139,17 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         elif node.op == "-":
             self.instr("SUB %T0, %RA", "-")
         elif node.op == "*":
-            pass
+            self.instr("MUL %T0, %RA", "*")
         elif node.op == "/":
             pass
         elif node.op == "%":
             pass
         elif node.op == "|":
-            pass
+            self.instr("OR %T0, %RA", "|")
         elif node.op == "&":
-            pass
+            self.instr("AND %T0, %RA", "&")
         elif node.op == "^":
-            pass
+            self.instr("XOR %T0, %RA", "^")
         elif node.op == "<<":
             pass
         elif node.op == ">>":
@@ -267,7 +267,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         # Decl: [name, quals, storage, funcspec, type*, init*, bitsize*]
         """Call on each Decl visit."""
         # check if short, then:
-        size_in_bytes = 2
+        size_in_bytes = 1
 
         self.comment("declaring {0}".format(node.type.declname), readability=2)
 
@@ -329,7 +329,15 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_FuncCall(self, node):  # FuncCall: [name*, args*]
         """Call on each FuncCall visit."""
-        raise NotImplementedError()
+        if node.args is not None:
+            for i, arg in enumerate(node.args):
+                self.pvisit(arg, node)
+                self.instr("PUSH %RA", "arg_"+str(i))
+                self.endl()
+        self.instr("JAL @{0}, %RA".format(node.name.name))
+        if node.args is not None:
+            print(node.args)
+            self.instr("ADDI ${0}, %SP".format(len(node.args.exprs)))
 
     def visit_FuncDecl(self, node):  # FuncDecl: [args*, type*]
         """Call on each FuncDecl visit."""
@@ -341,9 +349,16 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
         self.create_scope(node)
 
+        if node.decl.type.args is not None:
+            scope = self.get_scope(node)
+            for i, arg in enumerate(node.decl.type.args):
+                scope.variables[arg.name] = -2 - i
+                print("afd", arg.name, "asdf", -2-i)
+
         self.label(node.decl.name)
         if node.decl.name != "main":
             self.comment("function prep here")
+            self.instr("PUSH %RA")
             self.instr("PUSH %BP")
             self.instr("MOV %SP, %BP")
 
@@ -360,6 +375,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         if node.decl.name != "main":
             self.instr("MOV %BP, %SP")
             self.instr("POP %BP")
+            self.instr("POP %T0")
+            self.instr("JUC %T0")
         else:
             self.instr("JUC @.end")
         self.endl()
@@ -375,8 +392,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         if dist is None:
             self.error(node.name + " not found in scope", node)
         self.instr("MOV %BP, %T0", "load " + node.name)
-        self._constant(dist, "T1", unsigned=True)
-        self.instr("SUB %T1, %T0") #todo make subu
+        self._constant(dist, "T1", unsigned=False)
+        self.instr("SUB %T1, %T0")  # todo make subu
         self.instr("LOAD %RA, %T0")
         self.endl()
 
@@ -479,7 +496,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.instr("SUB %RA, %T0")
             self.instr("MOV %T0, %RA")
         elif node.op == "~":
-            self.instr("XORI $-1, %RA", "xor")
+            self.instr("NOT %RA, %RA", "not")
         elif node.op == "!":
             self.instr("CMPI $0, %RA", "!")
             self.instr("BEQ $2")
@@ -526,8 +543,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         if dist is None:
             self.error(node.name + " not found in scope", node)
         self.instr("MOV %BP, %T0", "store " + name)
-        self._constant(dist, "T1", unsigned=True)
-        self.instr("SUB %T1, %T0") #todo make sub u
+        self._constant(dist, "T1", unsigned=False)
+        self.instr("SUB %T1, %T0")  # todo make sub u
         self.instr("STOR %RA, %T0")
         self.endl()
 

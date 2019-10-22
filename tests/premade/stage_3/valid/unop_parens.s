@@ -7,7 +7,7 @@ main:
     ADDI $0x01, %RA
     POP %T0
     ADD %T0, %RA
-    XORI $-1, %RA
+    NOT %RA, %RA
     JUC @main._cleanup
 main._cleanup:
     JUC @.end
