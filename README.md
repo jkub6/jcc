@@ -15,7 +15,8 @@ Compiles from the C language into assembly, and can then assemble to a binary fi
 ```shell
 $ ./jcc -h
 usage: main.py [-h] [-c] [-a] [-l] [-A assembly_output_file]
-               [-L cleaned_output_file] [-B binary_output_file] [-v]
+               [-L cleaned_output_file] [-B binary_output_file] [-r [0-3]]
+               [-v]
                input_file
 
 positional arguments:
@@ -32,6 +33,9 @@ optional arguments:
                         cleaned assembly output file location
   -B binary_output_file, --binary_output binary_output_file
                         binary output file location
+  -r [0-3], --readability [0-3]
+                        level (0-3) of assembly code readability comments,
+                        spacing, etc...
   -v, --verbose         enable verbose output
 ```
 
@@ -39,8 +43,8 @@ optional arguments:
 
 * Does not currently short circuit logical operations
 * currently only scope for compounds, functions, and files
-* Need to add for if? <- add test
-* Continnue in for loops may be broken <- add test
+* Need to add score for if statement? <- add test
+* Continue in for loops may be broken <- add test
 * add test for mul, xor, or, and, and shifts.
 * test for BP differential in function call.
 

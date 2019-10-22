@@ -123,6 +123,8 @@ stages_inv = [i+1 for i in range(9)]
 parameters_inv = []
 ids_inv = []
 skips_inv = ["3malformed_paren", "8out_of_scope_do_while"]
+skips_inv += ["9bad_arg", "9declaration_mismatch", "9declaration_mismatch_2",
+              "9redefine_function", "9too_many_args"]
 for stage in stages_inv:
     for fileGroup in load_files(stage, False):
         parameters_inv.append((stage, fileGroup))
