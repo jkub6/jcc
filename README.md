@@ -12,7 +12,7 @@ Compiles from the C language into assembly, and can then assemble to a binary fi
 
 ## Usage
 
-```shell
+```console
 $ ./jcc -h
 usage: main.py [-h] [-c] [-a] [-l] [-A assembly_output_file]
                [-L cleaned_output_file] [-B binary_output_file] [-r [0-3]]
