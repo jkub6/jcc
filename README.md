@@ -50,9 +50,9 @@ optional arguments:
 
 ## Compiler Reference Documents
 
-<https://norasandler.com/2017/11/29/Write-a-Compiler.html>
-<http://scheme2006.cs.uchicago.edu/11-ghuloum.pdf>
-<http://www.wilfred.me.uk/blog/2014/08/27/baby-steps-to-a-c-compiler/>
-<http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf>
-<http://effbot.org/zone/simple-top-down-parsing.htm#summary>
+<https://norasandler.com/2017/11/29/Write-a-Compiler.html>  
+<http://scheme2006.cs.uchicago.edu/11-ghuloum.pdf>  
+<http://www.wilfred.me.uk/blog/2014/08/27/baby-steps-to-a-c-compiler/>  
+<http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf>  
+<http://effbot.org/zone/simple-top-down-parsing.htm#summary>  
 <https://dl.acm.org/citation.cfm?doid=512927.512931>
