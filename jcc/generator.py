@@ -42,6 +42,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         self.to_be_commented = None
         self.node_data_lookup = {}
 
+        self.function_decs = []
+        self.function_defs = []
         self.num_ternaries = 0
         self.num_ifs = 0
         self.num_loops = 0
@@ -266,16 +268,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
     def visit_Decl(self, node):  # TODO make work with bitsizes
         # Decl: [name, quals, storage, funcspec, type*, init*, bitsize*]
         """Call on each Decl visit."""
-        # check if short, then:
-        size_in_bytes = 1
-
-        self.comment("declaring {0}".format(node.type.declname), readability=2)
-
-        scope = self.get_closest_scope(node)
-        if node.type.declname in scope.variables:
-            self.error(node.type.declname + " is already in scope!", node)
-        scope.variables[node.type.declname] = scope.stack_index
-        scope.stack_index += size_in_bytes
+        self.pvisit(node.type, node)
 
         if node.init is not None:
             self.pvisit(node.init, node)
@@ -329,6 +322,15 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_FuncCall(self, node):  # FuncCall: [name*, args*]
         """Call on each FuncCall visit."""
+        name = node.name.name
+        argc = 0
+        if node.args is not None:
+            argc = len(node.args.exprs)
+
+        if (name, argc) not in self.function_defs:
+            self.error("Error, Function has not been defined: "
+                       + name, node)
+
         if node.args is not None:
             for i, arg in enumerate(node.args):
                 self.pvisit(arg, node)
@@ -336,15 +338,53 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
                 self.endl()
         self.instr("JAL @{0}, %RA".format(node.name.name))
         if node.args is not None:
-            print(node.args)
             self.instr("ADDI ${0}, %SP".format(len(node.args.exprs)))
 
     def visit_FuncDecl(self, node):  # FuncDecl: [args*, type*]
         """Call on each FuncDecl visit."""
-        raise NotImplementedError()
+        name = node.type.declname
+        argc = 0
+
+        self.comment("declaring func {0}".format(name), readability=2)
+
+        # check if name is same as a variable
+        scope = self.get_closest_scope(node)
+        if name in scope.variables.keys():
+            if scope.variables[name] != "@"+name:
+                self.error(name + " variable exists!", node)
+        scope.variables[name] = "@"+name
+
+        if node.args is not None:
+            argc = len(node.args.params)
+        if (name, argc) in self.function_decs:
+            self.error("Error, Function already declared elsewhere: "
+                       + name, node)
+        self.function_decs.append((name, argc))
 
     def visit_FuncDef(self, node):  # FuncDef: [decl*, param_decls**, body*]
         """Call on each FuncDef visit."""
+        name = node.decl.name
+        argc = 0
+        if node.decl.type.args is not None:
+            argc = len(node.decl.type.args.params)
+
+        self.comment("defining func {0}".format(name), readability=2)
+
+        # check if name is same as a variable
+        scope = self.get_closest_scope(node)
+        if name in scope.variables.keys():
+            if scope.variables[name] != "@"+name:
+                self.error(name + " variable exists!", node)
+        scope.variables[name] = "@"+name
+
+        if (name, argc) not in self.function_decs:
+            self.function_decs.append((name, argc))
+
+        if (name, argc) in self.function_defs:
+            self.error("Error, Function already deffined elsewhere: "
+                       + name, node)
+        self.function_defs.append((name, argc))
+
         self.found_return = False
 
         self.create_scope(node)
@@ -353,7 +393,6 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             scope = self.get_scope(node)
             for i, arg in enumerate(node.decl.type.args):
                 scope.variables[arg.name] = -2 - i
-                print("afd", arg.name, "asdf", -2-i)
 
         self.label(node.decl.name)
         if node.decl.name != "main":
@@ -475,7 +514,16 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_TypeDecl(self, node):  # TypeDecl: [declname, quals, type*]
         """Call on each TypeDecl visit."""
-        raise NotImplementedError()
+        # check if short, then:
+        size_in_bytes = 1
+
+        self.comment("declaring {0}".format(node.declname), readability=2)
+
+        scope = self.get_closest_scope(node)
+        if node.declname in scope.variables.keys():
+            self.error(node.declname + " is already in scope!", node)
+        scope.variables[node.declname] = scope.stack_index
+        scope.stack_index += size_in_bytes
 
     def visit_Typedef(self, node):  # Typedef: [name, quals, storage, type*]
         """Call on each Typedef visit."""
@@ -504,9 +552,9 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.instr("BUC $1")
             self.instr("MOVI $1, %RA")
         elif node.op == "&":
-            raise NotImplementedError()
+            self.instr("MOV %T0, %RA")  # todo cur depend on visit
         elif node.op == "*":
-            raise NotImplementedError()
+            self.instr("LOAD %RA, %RA")  # todo probably broken
         elif node.op == "++":
             raise NotImplementedError()
         elif node.op == "--":
