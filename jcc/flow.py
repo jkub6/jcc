@@ -14,6 +14,7 @@ import jcc.parser
 import jcc.generator
 import jcc.cleaner
 import jcc.assembler
+import jcc.preprocessor
 
 
 VERBOSE = False
@@ -101,6 +102,8 @@ def write_file(filename, data):
 
 def parse_c_code(c_data, filename):
     """Parse C file and return an abstract syntax tree."""
+    vprint("[Preprocessing C code]")
+    c_data = jcc.preprocessor.preprocess(c_data, filename)
     vprint("[parsing C code]")
     try:
         ast = jcc.parser.parse(c_data, filename)

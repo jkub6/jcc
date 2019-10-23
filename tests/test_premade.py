@@ -86,7 +86,7 @@ skips += ["10forward_declaration", "10fun_shadowed_by_variable",
           "10global_not_initialized", "10global_shadowed", "10global",
           "10multiple_global"]
 skips += ["1bin_num", "1hex_num"]
-stages = [i+1 for i in range(11)]
+stages = [i+1 for i in range(12)]
 parameters = []
 ids = []
 for stage in stages:
