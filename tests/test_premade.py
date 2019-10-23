@@ -82,10 +82,10 @@ skips += ["9fib", "9forward_decl_args",
           "9fun_in_expr", "9hello_world", "9later_decl",
           "9mutual_recursion",
           "9rename_function_param"]
-skips += ["10forward_declaration", "10fun_shadowed_by_variable",
-          "10global_not_initialized", "10global_shadowed", "10global",
-          "10multiple_global"]
+skips += ["10forward_declaration",
+          "10global_not_initialized", "10global_shadowed"]
 skips += ["1bin_num", "1hex_num"]
+skips += ["11basic_array"]
 stages = [i+1 for i in range(12)]
 parameters = []
 ids = []

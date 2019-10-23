@@ -48,6 +48,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         self.num_ifs = 0
         self.num_loops = 0
         self.found_return = False
+        self.found_main = False
+        self.jumped_to_main = False
 
     def get_parent(self, node):
         """Return the parent of the given node."""
@@ -394,6 +396,10 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             for i, arg in enumerate(node.decl.type.args):
                 scope.variables[arg.name] = -2 - i
 
+        if not self.jumped_to_main:
+            self.instr("JUC @main")
+            self.jumped_to_main = True
+
         self.label(node.decl.name)
         if node.decl.name != "main":
             self.comment("function prep here")
@@ -405,6 +411,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.pvisit(c, node)
 
         if node.decl.name == "main":
+            self.found_main = True
             if not self.found_return:
                 self.instr("MOVI $0, %RA")
                 self.instr("JUC @{0}._cleanup".format(node.decl.name))
@@ -620,7 +627,6 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
     def generate(self, ast, readability):
         """Wrap visit and return result."""
         self.readability = readability
-        self.instr("JUC @main")
         self.pvisit(ast, None)
         self.label(".end")
         return self.assembly_data

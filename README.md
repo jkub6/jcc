@@ -47,6 +47,7 @@ optional arguments:
 * Continue in for loops may be broken <- add test
 * add test for mul, xor, or, and, and shifts.
 * test for BP differential in function call.
+* globals only work above all functions
 
 ## Compiler Reference Documents
 
