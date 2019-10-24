@@ -278,7 +278,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_DeclList(self, node):  # DeclList: [decls**]
         """Call on each DeclList visit."""
-        raise NotImplementedError()
+        for c in node:
+            self.pvisit(c, node)
 
     def visit_Default(self, node):  # Default: [stmts**]
         """Call on each Default visit."""
@@ -294,7 +295,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_EmptyStatement(self, node):  # EmptyStatement: []
         """Call on each EmptyStatement visit."""
-        raise NotImplementedError()
+        # do nothing
 
     def visit_Enum(self, node):  # Enum: [name, values*]
         """Call on each Enum visit."""
@@ -315,12 +316,43 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
     def visit_FileAST(self, node):  # FileAST: [ext**]
         """Call on each FileAST visit."""
         self.create_scope(node)
+
+        function_defs = []
+
+        # do everything except function deffinitions first
         for c in node:
+            if isinstance(node, pycparser.c_ast.FuncDef):
+                function_defs.append(c)
+            else:
+                self.pvisit(c, node)
+
+        for c in function_defs:
             self.pvisit(c, node)
 
     def visit_For(self, node):  # For: [init*, cond*, next*, stmt*]
         """Call on each For visit."""
-        raise NotImplementedError()
+        self.create_scope(node)
+
+        loop_num = self.num_loops
+        self.num_loops += 1
+
+        if node.init is not None:
+            self.pvisit(node.init, node)
+
+        self.label(".loop{0}_begin".format(loop_num))
+        if node.cond is not None:
+            self.pvisit(node.cond, node)
+            self.instr("CMPI $0, %RA", "loop{0}".format(loop_num))
+            self.instr("JEQ @.loop{0}_end".format(loop_num))
+
+        self.pvisit(node.stmt, node)
+
+        if node.next is not None:
+            self.pvisit(node.next, node)
+
+        self.instr("JUC @.loop{0}_begin".format(loop_num))
+        self.label(".loop{0}_end".format(loop_num))
+        self.endl()
 
     def visit_FuncCall(self, node):  # FuncCall: [name*, args*]
         """Call on each FuncCall visit."""
@@ -576,6 +608,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_While(self, node):  # While: [cond*, stmt*]
         """Call on each While visit."""
+        self.create_scope(node)
+
         loop_num = self.num_loops
         self.num_loops += 1
 
