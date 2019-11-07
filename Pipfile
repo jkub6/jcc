@@ -11,10 +11,10 @@ pep8 = "*"
 pytest = "==5.0.1"
 pyinstaller = "*"
 sphinx = "*"
-cocotb-test = "*"
 cocotb = "*"
 sphinx-rtd-theme = "*"
 doc8 = "*"
+cocotb-test = "*"
 
 [packages]
 pycparser = "*"

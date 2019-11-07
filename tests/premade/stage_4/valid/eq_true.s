@@ -7,9 +7,9 @@ main:
     ADDI $0x01, %RA
     POP %T0
     CMP %RA, %T0
-    BEQ $2
+    BEQ $3
     MOVI $0, %RA
-    BUC $1
+    BUC $2
     MOVI $1, %RA
     JUC @main._cleanup
 main._cleanup:

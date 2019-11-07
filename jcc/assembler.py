@@ -169,9 +169,11 @@ def assemble(assembly_data, zeros=True):
             binary_data += "Error, command not found: " + cmd_str + "\n"
             # raise Exception("Error, command not found: " + cmd)
 
+        lines += 1
+
     if zeros:  # pack end with zeros if desired
         while lines < 0xFFFF:
-            binary_data += "00\n"
+            binary_data += "0000\n"
             lines += 1
 
     return binary_data

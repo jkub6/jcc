@@ -49,9 +49,9 @@ main:
     LOAD %RA, %T0
     POP %T0
     CMP %RA, %T0
-    BLT $2
+    BLT $3
     MOVI $0, %RA
-    BUC $1
+    BUC $2
     MOVI $1, %RA
     CMPI $0, %RA
     JEQ @.if1_else

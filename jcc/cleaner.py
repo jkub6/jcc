@@ -120,6 +120,6 @@ def clean(assembly_data):
                                "$0x" + loc[8:].hex, assembly_data)
 
     # add infinite loop at end
-    assembly_data += "\nBUC $-1\n"
+    assembly_data += "\nBUC $0\n"
 
     return assembly_data

@@ -14,9 +14,9 @@ three._cleanup:
 main:
     JAL @three, %RA
     CMPI $0, %RA
-    BEQ $2
+    BEQ $3
     MOVI $0, %RA
-    BUC $1
+    BUC $2
     MOVI $1, %RA
     JUC @main._cleanup
 main._cleanup:
