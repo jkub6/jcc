@@ -5,6 +5,7 @@ This file is a part of Jake's C Compiler (JCC)
 (c) Copyright 2019 Jacob Larkin
 """
 
+import re
 import pycparser
 from pycparser import c_generator
 
@@ -15,12 +16,28 @@ class ParseError(Exception):
     errno = 3
 
 
+def remove_comments(text):
+    """Remove comments from c text while keeping line numbers."""
+    def replacer(match):
+        s = match.group(0)
+        lines = s.count("\n")
+        out = "\n"*lines
+        return out
+    pattern = re.compile(
+        r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
+        re.DOTALL | re.MULTILINE
+    )
+    return re.sub(pattern, replacer, text)
+
+
 def parse(input_data, input_file_name, use_cpp=False):
     """Parse input source code and return as an abstract syntax tree."""
     if use_cpp:
-        print("C preprocessing not implemented, ignoring...")
+        print("C preprocessing not fully implemented, ignoring...")
 
     parser = pycparser.CParser()
+
+    input_data = remove_comments(input_data)
 
     try:
         ast = parser.parse(input_data, input_file_name)

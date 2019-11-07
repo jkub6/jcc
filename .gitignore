@@ -20,6 +20,7 @@ cocotb_testing
 #Verilog simulation builds
 tests/verilog/sim_build
 tests/TFproc/sim_build
+tests/tmp
 
 # Pytest cache
 .pytest_cache/

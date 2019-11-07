@@ -1,1 +1,0 @@
-premade/stage_1/valid/multi_digit.c
