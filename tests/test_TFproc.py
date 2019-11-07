@@ -59,7 +59,11 @@ print(parameters)
 def setup_module(module):
     """Run all programs and save output to global var."""
     global verilog_results
-    
+
+    try:
+        os.mkdir("tmp")
+    except FileExistsError:
+        pass
 
     with open("./tests/temp_files.txt", "w") as f:
         for filepath in files:
@@ -74,10 +78,11 @@ def setup_module(module):
         module="TFproc_cocotb",
         sim_build="tests/TFproc/sim_build"
     )
-    print("ran")
+    os.remove("./tests/temp_files.txt")
 
     with open("./tests/temp_results.txt") as f:
         results = f.read()
+    os.remove("./tests/temp_results.txt")
 
     for line in results.strip().split("\n"):
         verilog_results.append(line)
@@ -108,13 +113,11 @@ def test_files(stage, num, filepath):
     global verilog_results
     result = int(verilog_results[num]) % 256
 
-    try:
-        os.mkdir("tmp")
-    except FileExistsError:
-        pass
-
     answer = gcc_and_run("tests/"+filepath)
 
-    shutil.rmtree("tmp")
-
     assert answer == result
+
+
+def teardown_module(module):
+    """Tear down the test module."""
+    shutil.rmtree("tmp")

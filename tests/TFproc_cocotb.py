@@ -53,7 +53,7 @@ def run_file(dut, filepath):
     data = file.read().strip()
     file.close()
 
-    #print(data)
+    # print(data)
 
     for i, line in enumerate(data.split("\n")):
         dut.reset <= 0
