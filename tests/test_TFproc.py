@@ -34,7 +34,7 @@ def load_filepaths(stage_num, valid):
 
 skips = ["3div", "3mod", "3associativity_2"]
 skips += ["1bin_num", "1hex_num"]
-stages = [i+1 for i in range(2)]
+stages = [i+1 for i in range(3)]
 parameters = []
 files = []
 ids = []

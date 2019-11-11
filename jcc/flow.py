@@ -15,6 +15,7 @@ import jcc.generator
 import jcc.cleaner
 import jcc.assembler
 import jcc.preprocessor
+import jcc.image_packer
 
 
 VERBOSE = False
@@ -30,8 +31,8 @@ def vprint(*argv):
 def parse_args(run_with_args=None):
     """Parse arguments given to JCC."""
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("file", metavar="input_file",
-                           help="input file location")
+    argparser.add_argument("file", metavar="input_file", nargs="?",
+                           help="input file location", default=None)
 
     argparser.add_argument("-c", "--compile", action="store_true",
                            help="compile C file to assembly")
@@ -53,9 +54,17 @@ def parse_args(run_with_args=None):
                            dest="binary_output_filename", default="./out.dat",
                            help="binary output file location")
 
-#   argparser.add_argument("-r", "--readability", action="store_true",
-#                          help="level (0-3) of assembly code readability" +
-#                               "comments, spacing, etc...")
+    argparser.add_argument("-g", "--output_glyphs",
+                           metavar="glyph_folder",
+                           dest="glyph_folder", default=None,
+                           help="Take in a folder of images to make glyphs")
+    argparser.add_argument("-G", "--glyph_output",
+                           metavar="glyph_output_file",
+                           dest="glyph_output_filename", default="./out.txt",
+                           help="glyph output file location")
+    argparser.add_argument("-p", "--label_glyphs", action="store_true",
+                           help="Label output glyphs as ascii charset")
+
     argparser.add_argument('-r', '--readability', required=False, type=int,
                            choices=range(0, 4), metavar="[0-3]",
                            help="level (0-3) of assembly code readability \
@@ -167,19 +176,28 @@ def run(run_with_args=None):
     """Run JCC compiler."""
     args = parse_args(run_with_args)
 
-    if args.compile:
-        c_data = read_file(args.file)
-        ast = parse_c_code(c_data, args.file)
-        assembly_data = generate_assembly_code(ast, args.readability)
-        write_file(args.assemby_output_filename, assembly_data)
-    else:
-        assembly_data = read_file(args.file)
+    if args.glyph_folder is not None:
+        jcc.image_packer.pack(args.glyph_folder, args.glyph_output_filename,
+                              args.label_glyphs)
+        print("Wrote glyphs to " + args.glyph_output_filename)
 
-    if args.assemble:
-        clean_data = clean_assembly(assembly_data)
-        if args.output_cleaned:
-            write_file(args.cleaned_output_filename, clean_data)
-        binary_data = generate_binary_code(clean_data)
-        write_file(args.binary_output_filename, binary_data)
+    elif args.file is not None:
+        if args.compile:
+            c_data = read_file(args.file)
+            ast = parse_c_code(c_data, args.file)
+            assembly_data = generate_assembly_code(ast, args.readability)
+            write_file(args.assemby_output_filename, assembly_data)
+        else:
+            assembly_data = read_file(args.file)
+
+        if args.assemble:
+            clean_data = clean_assembly(assembly_data)
+            if args.output_cleaned:
+                write_file(args.cleaned_output_filename, clean_data)
+            binary_data = generate_binary_code(clean_data)
+            write_file(args.binary_output_filename, binary_data)
+
+    else:
+        print("Error, no input file specified.")
 
     finish()

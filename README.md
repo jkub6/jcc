@@ -15,9 +15,9 @@ Compiles from the C language into assembly, and can then assemble to a binary fi
 ```console
 $ ./jcc -h
 usage: main.py [-h] [-c] [-a] [-l] [-A assembly_output_file]
-               [-L cleaned_output_file] [-B binary_output_file] [-r [0-3]]
-               [-v]
-               input_file
+               [-L cleaned_output_file] [-B binary_output_file]
+               [-g glyph_folder] [-G glyph_output_file] [-p] [-r [0-3]] [-v]
+               [input_file]
 
 positional arguments:
   input_file            input file location
@@ -33,6 +33,11 @@ optional arguments:
                         cleaned assembly output file location
   -B binary_output_file, --binary_output binary_output_file
                         binary output file location
+  -g glyph_folder, --output_glyphs glyph_folder
+                        Take in a folder of images to make glyphs
+  -G glyph_output_file, --glyph_output glyph_output_file
+                        glyph output file location
+  -p, --label_glyphs    Label output glyphs as ascii charset
   -r [0-3], --readability [0-3]
                         level (0-3) of assembly code readability comments,
                         spacing, etc...

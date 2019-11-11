@@ -19,6 +19,8 @@ cocotb-test = "*"
 [packages]
 pycparser = "*"
 bitstring = "*"
+numpy = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.7"
