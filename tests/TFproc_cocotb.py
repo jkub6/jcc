@@ -66,7 +66,7 @@ def run_file(dut, filepath):
     cycles = 0
     last_pc = 0
     pcs_in_row = 0
-    while pcs_in_row < 10:
+    while pcs_in_row < 10 and (cycles < 5000):
         yield clkedge
 
         pc = dut.proc.dp.progcount.count.value.integer
@@ -75,13 +75,20 @@ def run_file(dut, filepath):
         else:
             pcs_in_row = 0
             last_pc = pc
-            print("RA", dut.proc.dp.regFile.RAM[0])
-            print("T0", dut.proc.dp.regFile.RAM[1])
-            print("SP", dut.proc.dp.regFile.RAM[15])
-            print("pc", pc, ":", data.split("\n")[pc])
+            # print("RA", dut.proc.dp.regFile.RAM[0])
+            # print("T0", dut.proc.dp.regFile.RAM[1])
+            # print("T1", dut.proc.dp.regFile.RAM[2])
+            # print("SP", dut.proc.dp.regFile.RAM[15])
+            # print("BP", dut.proc.dp.regFile.RAM[14])
+            # print("RAM <e000>", dut.memory.ram[57344])
+            # print("RAM <dfff>", dut.memory.ram[57343])
+            # print("RAM <dffe>", dut.memory.ram[57342])
+            # print("RAM <dffd>", dut.memory.ram[57341])
+            # print("RAM <deec>", dut.memory.ram[57340])
+            # print("---> pc", pc, ":", data.split("\n")[pc])
 
         cycles += 1
-    print("prog over ----------")
+    # print("prog over ----------")
 
     cycles -= 10  # remove cycles from in loop
 
@@ -106,7 +113,7 @@ def run_test(dut):
             jcc.run(tmp_args)
             ret = yield run_file(dut, "./tmp/tmp.dat")
             rets.append(str(ret))
-        except Exception:
+        except:
             rets.append("FAIL")
 
     with open("../../temp_results.txt", "w") as f:

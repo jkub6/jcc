@@ -20,12 +20,20 @@ def clean(assembly_data):
         "T1": 0x0000
         }
 
+    # add blank line
+    temp_data = "BUC $1\n"
+
+    # get rid of later
+    bits = Bits(uint=start_values["SP"], length=16)
+    temp_data += "LUI $0x{}, %{}\n".format(bits[:8].hex, "SP")
+    temp_data += "ADDUI $0x{}, %{}\n".format(bits[8:].hex, "SP")
+
     # add reg stating values
-    temp_data = ""
+    # temp_data = ""
     for reg in start_values.keys():
         bits = Bits(uint=start_values[reg], length=16)
         temp_data += "LUI $0x{}, %{}\n".format(bits[:8].hex, reg)
-        temp_data += "ADDI $0x{}, %{}\n".format(bits[8:].hex, reg)
+        temp_data += "ADDUI $0x{}, %{}\n".format(bits[8:].hex, reg)
     assembly_data = temp_data + assembly_data
 
     # pass for cleaning
@@ -60,8 +68,8 @@ def clean(assembly_data):
             # temp_data += "STOR %RA, %SP\n"
             # temp_data += "SUBI 2, %SP"
         elif line.startswith("POP"):
-            temp_data += "LOAD" + line[3:] + ", %SP\n"
             temp_data += "ADDI $1, %SP\n"
+            temp_data += "LOAD" + line[3:] + ", %SP\n"
             # temp_data += "LOAD %RA, %SP\n"
             # temp_data += "ADDI 2, %SP"
         else:
@@ -71,12 +79,14 @@ def clean(assembly_data):
     # pass for makeing labels multi-line
     count = 0
     temp_data = ""
+    temp_lines = []
     for line in assembly_data.split("\n"):
         cmd = line.split(" ")[0]
         cmd = cmd.strip()
 
         if line.endswith(":"):
             temp_data += line + "\n"
+            temp_lines.append(line)
             continue
 
         args = "".join(line.split(" ")[1:]).split(",")
@@ -85,14 +95,22 @@ def clean(assembly_data):
             arg = arg.strip()
             if arg.startswith("@"):
                 temp_data += "LUI @{}._high, %T1\n".format(arg[1:])
-                temp_data += "ADDI @{}._low, %T1\n".format(arg[1:])
+                temp_data += "ADDUI @{}._low, %T1\n".format(arg[1:])
+                if temp_lines[-1].startswith("CMP"):
+                    temp_lines.insert(-1, "LUI @{}._high, %T1".format(arg[1:]))
+                    temp_lines.insert(-1,
+                                      "ADDUI @{}._low, %T1".format(arg[1:]))
+                else:
+                    temp_lines.append("LUI @{}._high, %T1".format(arg[1:]))
+                    temp_lines.append("ADDUI @{}._low, %T1".format(arg[1:]))
                 arg = "%T1"
-                # raise Exception("fix me!!!")
             temp_args.append(arg)
         args = temp_args
 
         temp_data += cmd + " " + ", ".join(args) + "\n"
+        temp_lines.append(cmd + " " + ", ".join(args))
     assembly_data = temp_data
+    assembly_data = "\n".join(temp_lines)
 
     # pass for label locations
     labels = {}

@@ -4,8 +4,8 @@ module Processor #(parameter WIDTH = 16, REGBITS = 4)
               output             memRead, memWrite, 
               output [WIDTH-1:0] adrToMem, dataToMem);
 			
-wire muxBin, muxPc, shiftOp, muxExtImm, instrRegEn, regFileEn, memDataRegEn, muxMemAdr, outRegEn, codesComputed;
-wire [1:0] muxAin, muxToRegFile, muxShiftAmount, muxOut, pcEn, muxShiftShifter;
+wire muxBin, muxPc, shiftOp,  instrRegEn, regFileEn, memDataRegEn, muxMemAdr, outRegEn, codesComputed;
+wire [1:0] muxAin, muxToRegFile, muxExtImm, muxShiftAmount, muxOut, pcEn, muxShiftShifter;
 wire[WIDTH-1:0] conCodesOut;
 wire[3:0] opCode, opCodeExt;
 wire [4:0] aluOp;		

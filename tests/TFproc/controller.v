@@ -2,7 +2,9 @@ module controller #(parameter WIDTH = 16)
 					(input clk, reset, 
 					input [WIDTH-1:0] conCodesOut,
 					input [3:0] opCode, opCodeExt,
-					output reg  muxBin, muxPc, shiftOp, muxExtImm, memRead, memWrite, codesComputed,
+					output reg  muxBin, muxPc, shiftOp, 
+					output reg [1:0] muxExtImm,
+					output reg	memRead, memWrite, codesComputed,
 					output reg  instrRegEn, regFileEn, memDataRegEn, muxMemAdr, outRegEn,
 					output reg  [1:0] muxAin, muxToRegFile, muxShiftAmount, muxOut, pcEn, muxShiftShifter,
 					output reg  [4:0] aluOp);
@@ -13,7 +15,7 @@ always@(posedge clk) begin
 	if (reset) begin
 		state <= 'd0;
 	end
-	else begin
+	else begin 
 		state <= nextState;
 	end
 end
@@ -32,7 +34,7 @@ begin
 	muxBin = 0;
 	muxPc = 0;
 	shiftOp = 0;
-	muxExtImm = 0;
+	muxExtImm = 'd0;
 	memRead = 0;
 	memWrite = 0;
 	instrRegEn = 0;
@@ -108,6 +110,7 @@ begin
 					aluOp = 'd6;				
 					codesComputed = 1;
 				end
+				4'b1110: 	aluOp = 'd8;	// MUL		
 				default: aluOp = 'd3;	// shouldnt happen
 			endcase
 			outRegEn = 1;
@@ -146,6 +149,7 @@ begin
 					aluOp = 'd6;				
 					codesComputed = 1;
 				end
+				4'b1110: 	aluOp = 'd8;	// MUL	
 				default: aluOp = 'd3;	// shouldnt happen
 			endcase
 			outRegEn = 1;
@@ -193,7 +197,12 @@ begin
 		
 		'd12:begin
 			muxPc = conCodesOut[0];
-			pcEn = 'b10;
+			if (conCodesOut[0]) begin
+				pcEn = 'b10;
+			end
+			else  begin
+				pcEn = 'b11;
+			end
 			nextState = 'd1;
 		end
 		'd13:begin
@@ -297,6 +306,15 @@ begin
 				
 				4'b1101: begin		// MOVI
 					nextState  = 'd20;
+				end
+				4'b0110: begin // ADDLI  or ADDUI
+					nextState = 'd5;
+					//muxAin = 'd1;
+					//muxBin = 'd1;
+					//outRegEn = 1;
+					//muxOut = 'd1;
+					//muxExtImm = 'd2;
+					//snextState = 'd3;
 				end
 				
 				default: begin		// immediate arithmetic

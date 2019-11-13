@@ -141,7 +141,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         if node.op == "+":
             self.instr("ADD %T0, %RA", "+")
         elif node.op == "-":
-            self.instr("SUB %T0, %RA", "-")
+            self.instr("SUB %RA, %T0", "-")
+            self.instr("MOV %T0, %RA")
         elif node.op == "*":
             self.instr("MUL %T0, %RA", "*")
         elif node.op == "/":
@@ -161,55 +162,57 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         elif node.op == "||":
             self.instr("CMPI $0, %T0", "||")
             self.instr("BEQ $3")
-            self.instr("MOVI $1, %RA")
+            self.instr("MOVI $1, %T1")
             self.instr("BUC $2")
-            self.instr("MOVI $0, %RA")
+            self.instr("MOVI $0, %T1")
 
             self.instr("CMPI $0, %RA")
             self.instr("BEQ $2")
-            self.instr("MOVI $1, %RA")
+            self.instr("MOVI $1, %T1")
+            self.instr("MOV %T1, %RA")
         elif node.op == "&&":
             self.instr("CMPI $0, %T0", "&&")
             self.instr("BEQ $3")
-            self.instr("MOVI $1, %RA")
+            self.instr("MOVI $1, %T1")
             self.instr("BUC $2")
-            self.instr("MOVI $0, %RA")
+            self.instr("MOVI $0, %T1")
 
             self.instr("CMPI $0, %RA")
             self.instr("BNE $2")
-            self.instr("MOVI $0, %RA")
+            self.instr("MOVI $0, %T1")
+            self.instr("MOV %T1, %RA")
         elif node.op == "<":
-            self.instr("CMP %RA, %T0", "<")
+            self.instr("CMP %T0, %RA", "<")
             self.instr("BLT $3")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $2")
             self.instr("MOVI $1, %RA")
         elif node.op == "<=":
-            self.instr("CMP %RA, %T0", "<=")
+            self.instr("CMP %T0, %RA", "<=")
             self.instr("BLE $3")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $2")
             self.instr("MOVI $1, %RA")
         elif node.op == ">":
-            self.instr("CMP %RA, %T0", ">")
+            self.instr("CMP %T0, %RA", ">")
             self.instr("BGT $3")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $2")
             self.instr("MOVI $1, %RA")
         elif node.op == ">=":
-            self.instr("CMP %RA, %T0", ">=")
+            self.instr("CMP %T0, %RA", ">=")
             self.instr("BGE $3")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $2")
             self.instr("MOVI $1, %RA")
         elif node.op == "==":
-            self.instr("CMP %RA, %T0", "==")
+            self.instr("CMP %T0, %RA", "==")
             self.instr("BEQ $3")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $2")
             self.instr("MOVI $1, %RA")
         elif node.op == "!=":
-            self.instr("CMP %RA, %T0", "!=")
+            self.instr("CMP %T0, %RA", "!=")
             self.instr("BNE $3")
             self.instr("MOVI $0, %RA")
             self.instr("BUC $2")
@@ -425,8 +428,8 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
         if node.decl.type.args is not None:
             scope = self.get_scope(node)
-            for i, arg in enumerate(node.decl.type.args):
-                scope.variables[arg.name] = -2 - i
+            for i, arg in enumerate(reversed(list(node.decl.type.args))):
+                scope.variables[arg.name] = -3 - i
 
         if not self.jumped_to_main:
             self.instr("JUC @main")
@@ -443,10 +446,9 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.pvisit(c, node)
 
         if node.decl.name == "main":
-            self.found_main = True
-            if not self.found_return:
-                self.instr("MOVI $0, %RA")
-                self.instr("JUC @{0}._cleanup".format(node.decl.name))
+            # self.found_main = True
+            self.instr("MOVI $0, %RA")
+            self.instr("JUC @{0}._cleanup".format(node.decl.name))
 
         self.label("{0}._cleanup".format(node.decl.name))
 
@@ -454,6 +456,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             self.instr("MOV %BP, %SP")
             self.instr("POP %BP")
             self.instr("POP %T0")
+            self.instr("ADDI $1, %T0")
             self.instr("JUC %T0")
         else:
             self.instr("JUC @.end")
@@ -470,8 +473,12 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         if dist is None:
             self.error(node.name + " not found in scope", node)
         self.instr("MOV %BP, %T0", "load " + node.name)
-        self._constant(dist, "T1", unsigned=False)
-        self.instr("SUB %T1, %T0")  # todo make subu
+        if dist >= 0:
+            self._constant(dist, "T1", unsigned=False)
+            self.instr("SUB %T1, %T0")  # todo make subu
+        else:
+            self._constant(-dist, "T1", unsigned=False)
+            self.instr("ADD %T1, %T0")
         self.instr("LOAD %RA, %T0")
         self.endl()
 
@@ -543,7 +550,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
         self.pvisit(node.cond, node)
         self.instr("CMPI $0, %RA", "ter{0}".format(ter_num))
-        self.instr("JNE @.ter{0}_false".format(ter_num))
+        self.instr("JEQ @.ter{0}_false".format(ter_num))
         self.pvisit(node.iftrue, node)
         self.instr("JUC @.ter{0}_done".format(ter_num))
         self.label(".ter{0}_false".format(ter_num))
@@ -657,7 +664,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
             bits = Bits(int=bits.int, length=16)
 
         self.instr("LUI $0x{}, %{}".format(bits[:8].hex, reg))
-        self.instr("ADDI $0x{}, %{}".format(bits[8:].hex, reg))
+        self.instr("ADDUI $0x{}, %{}".format(bits[8:].hex, reg))
 
     def generate(self, ast, readability):
         """Wrap visit and return result."""

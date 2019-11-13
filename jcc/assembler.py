@@ -23,6 +23,7 @@ standard_commands = {
     "ADDU": (0b0000, 0b0110),
     "ADDC": (0b0000, 0b0111),
     "MUL": (0b0000, 0b1110),
+    # "MUL": (0b0000, 0b1000),
     "SUBC": (0b0000, 0b1010),
     "NOT": (0b0000, 0b0100),
     "SAR": (0b1000, 0b1000)
@@ -39,7 +40,8 @@ immediate_commands = {
     "MOVI": 0b1101,
     "LUI": 0b1111,
     "SUBCI": 0b1010,
-    "MULI": 0b1110
+    "MULI": 0b1110,
+    "ADDUI": 0b0110
     }
 
 special_commands = {
@@ -117,7 +119,10 @@ def assemble(assembly_data, zeros=True):
             rsrc = Bits(uint=reg_map[elements[1]], length=4)
             rdest = Bits(uint=reg_map[elements[2]], length=4)
 
-            binary_data += cmd.hex + rdest.hex + cmd2.hex + rsrc.hex + "\n"
+            if cmd_str == "LOAD" or cmd_str == "STOR":
+                binary_data += cmd.hex + rsrc.hex + cmd2.hex + rdest.hex + "\n"
+            else:
+                binary_data += cmd.hex + rdest.hex + cmd2.hex + rsrc.hex + "\n"
 
         elif cmd_str in immediate_commands:
             cmd = Bits(uint=immediate_commands[cmd_str], length=4)

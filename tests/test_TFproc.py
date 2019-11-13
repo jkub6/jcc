@@ -33,14 +33,29 @@ def load_filepaths(stage_num, valid):
 
 
 skips = ["3div", "3mod", "3associativity_2"]
+skips += ["4skip_on_failure_short_circuit_or",
+          "4skip_on_failure_short_circuit_and",
+          "4skip_on_failure_multi_short_circuit"]
+skips += ["8break", "8continue_empty_post", "8continue", "8do_while",
+          "8for_nested_scope",
+          "8for_variable_shadow", "8nested_break"]
+skips += ["8nested_while", "8continue_in_while"]
 skips += ["1bin_num", "1hex_num"]
-stages = [i+1 for i in range(3)]
+
+skips += ["9fib", "9forward_decl_args",
+          "9forward_decl_multi_arg", "9forward_decl",
+          "9fun_in_expr", "9hello_world", "9later_decl",
+          "9mutual_recursion",
+          "9rename_function_param"]
+skips += ["10forward_declaration",
+          "10global_not_initialized"]
+# stages = [i+6 for i in range(1)]
+stages = [i+1 for i in range(10)]
 parameters = []
 files = []
 ids = []
 i = 0
 for stage in stages:
-    print("sf")
     for filepath in load_filepaths(stage, True):
         filename = ntpath.basename(filepath)
         if str(stage)+filename[:-2] in skips:
@@ -112,8 +127,10 @@ def test_files(stage, num, filepath):
     """Configure testbench and run a test."""
     global verilog_results
     result = int(verilog_results[num]) % 256
-
-    answer = gcc_and_run("tests/"+filepath)
+    try:
+        answer = gcc_and_run("tests/"+filepath)
+    except Exception:
+        print("Error compiling file")
 
     assert answer == result
 

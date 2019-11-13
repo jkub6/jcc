@@ -2,7 +2,7 @@
 main:
 .loop0_begin:
     LUI $0x00, %RA
-    ADDI $0x01, %RA
+    ADDUI $0x01, %RA
     CMPI $0, %RA
     JEQ @.loop0_end
     JUC @.loop0_begin

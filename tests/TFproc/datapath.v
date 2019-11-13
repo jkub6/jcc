@@ -1,5 +1,6 @@
 module datapath #(parameter WIDTH = 16)
-				(  input clk, reset, muxBin, muxPc, shiftOp,  muxExtImm, 
+				(  input clk, reset, muxBin, muxPc, shiftOp,  
+					input [1:0] muxExtImm, 
 					input  instrRegEn, regFileEn, memDataRegEn, muxMemAdr, outRegEn,codesComputed,
 					input [1:0] muxAin, muxToRegFile, muxShiftAmount, muxShiftShifter, muxOut, pcEn, 
 					input [WIDTH-1:0] dataFromMem, pcLoad,
@@ -35,7 +36,7 @@ signExtender signExt(immW, immExtSTW);
 
 signExtender #(WIDTH,5) signExtForLSHI(immW[4:0], immExtFiveW);	// this is used in LSHI
 
-mux2 muxExtendedImm(immExtSTW, immExtFiveW, muxExtImm, immExtW);
+mux4 muxExtendedImm(immExtSTW, immExtFiveW, {{8'd0},immW}, 0, muxExtImm, immExtW);
 
 register memDataReg(dataFromMem, memDataRegEn, clk, memDataRegToMuxRegFileW);
 

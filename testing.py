@@ -11,7 +11,7 @@ from pycparser import c_ast
 
 if __name__ == "__main__":
     jcc.flow.VERBOSE = True
-    c_data = jcc.flow.read_file("tests/premade/stage_12/valid/header.c")
+    c_data = jcc.flow.read_file("tests/premade/stage_3/valid/associativity.c")
 
     ast = jcc.flow.parse_c_code(c_data,
                                 "tests/premade/stage_9/valid/bin_num.c")
