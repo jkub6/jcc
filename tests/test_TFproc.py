@@ -42,10 +42,8 @@ skips += ["8break", "8continue_empty_post", "8continue", "8do_while",
 skips += ["8nested_while", "8continue_in_while"]
 skips += ["1bin_num", "1hex_num"]
 
-skips += ["9forward_decl_args",
-          "9forward_decl_multi_arg", "9forward_decl",
-          "9fun_in_expr", "9hello_world", "9later_decl",
-          "9rename_function_param"]
+skips += ["9fun_in_expr", "9hello_world", "9later_decl",
+          "9rename_function_param", "9mutual_recursion"]
 skips += ["10forward_declaration",
           "10global_not_initialized"]
 skips += ["11both_2", "11both", "11dereference", "11basic_array"]

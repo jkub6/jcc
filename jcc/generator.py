@@ -122,8 +122,9 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         if node.op == "=":
             print(node.lvalue)
             print(type(node.lvalue))
-            if (isinstance(node.lvalue, pycparser.c_ast.UnaryOp) and
-               node.lvalue.op == "*"):
+            if isinstance(node.lvalue, pycparser.c_ast.UnaryOp):
+                if node.lvalue.op != "*":
+                    self.error("bad left hand of assignment", node)
                 print("oi", node.rvalue, node.lvalue)
                 self.pvisit(node.rvalue, node)
                 self.instr("PUSHPP %RA")
@@ -341,6 +342,12 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
         for c in function_defs:
             self.pvisit(c, node)
+        
+        # assure all funcs deffined
+        for func in self.function_decs:
+            if func not in self.function_defs:
+                self.error("function declared but not deffined:"+str(func), node)
+
 
     def visit_For(self, node):  # For: [init*, cond*, next*, stmt*]
         """Call on each For visit."""
@@ -374,7 +381,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         if node.args is not None:
             argc = len(node.args.exprs)
 
-        if (name, argc) not in self.function_defs:
+        if (name, argc) not in self.function_decs:
             self.error("Error, Function has not been defined: "
                        + name, node)
 
