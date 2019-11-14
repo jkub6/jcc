@@ -74,6 +74,7 @@ condition_codes = {
 reg_map = {
     "SP": 0b1111,
     "BP": 0b1110,
+    "PP": 0b1101,
     "RA": 0b0000,
     "T0": 0b0001,
     "T1": 0b0010,

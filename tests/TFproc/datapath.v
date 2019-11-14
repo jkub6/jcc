@@ -36,7 +36,7 @@ signExtender signExt(immW, immExtSTW);
 
 signExtender #(WIDTH,5) signExtForLSHI(immW[4:0], immExtFiveW);	// this is used in LSHI
 
-mux4 muxExtendedImm(immExtSTW, immExtFiveW, {{8'd0},immW}, 0, muxExtImm, immExtW);
+mux4 muxExtendedImm(immExtSTW, immExtFiveW, {{8'd0},immW}, 16'd0, muxExtImm, immExtW);
 
 register memDataReg(dataFromMem, memDataRegEn, clk, memDataRegToMuxRegFileW);
 

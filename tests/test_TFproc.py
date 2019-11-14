@@ -42,15 +42,16 @@ skips += ["8break", "8continue_empty_post", "8continue", "8do_while",
 skips += ["8nested_while", "8continue_in_while"]
 skips += ["1bin_num", "1hex_num"]
 
-skips += ["9fib", "9forward_decl_args",
+skips += ["9forward_decl_args",
           "9forward_decl_multi_arg", "9forward_decl",
           "9fun_in_expr", "9hello_world", "9later_decl",
-          "9mutual_recursion",
           "9rename_function_param"]
 skips += ["10forward_declaration",
           "10global_not_initialized"]
+skips += ["11both_2", "11both", "11dereference", "11basic_array"]
+skips += ["11write_mem", "11address"]
 # stages = [i+6 for i in range(1)]
-stages = [i+1 for i in range(10)]
+stages = [i+9 for i in range(1)]
 parameters = []
 files = []
 ids = []
@@ -129,8 +130,9 @@ def test_files(stage, num, filepath):
     result = int(verilog_results[num]) % 256
     try:
         answer = gcc_and_run("tests/"+filepath)
-    except Exception:
+    except:
         print("Error compiling file")
+        raise Exception("Error compiling file")
 
     assert answer == result
 

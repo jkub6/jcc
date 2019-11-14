@@ -75,17 +75,22 @@ def run_file(dut, filepath):
         else:
             pcs_in_row = 0
             last_pc = pc
-            # print("RA", dut.proc.dp.regFile.RAM[0])
-            # print("T0", dut.proc.dp.regFile.RAM[1])
-            # print("T1", dut.proc.dp.regFile.RAM[2])
-            # print("SP", dut.proc.dp.regFile.RAM[15])
-            # print("BP", dut.proc.dp.regFile.RAM[14])
-            # print("RAM <e000>", dut.memory.ram[57344])
-            # print("RAM <dfff>", dut.memory.ram[57343])
-            # print("RAM <dffe>", dut.memory.ram[57342])
-            # print("RAM <dffd>", dut.memory.ram[57341])
-            # print("RAM <deec>", dut.memory.ram[57340])
-            # print("---> pc", pc, ":", data.split("\n")[pc])
+            print("RA", dut.proc.dp.regFile.RAM[0])
+            print("T0", dut.proc.dp.regFile.RAM[1])
+            print("T1", dut.proc.dp.regFile.RAM[2])
+            print("SP", dut.proc.dp.regFile.RAM[15])
+            print("BP", dut.proc.dp.regFile.RAM[14])
+            print("PP", dut.proc.dp.regFile.RAM[13])
+            print("RAM <sp>", dut.memory.ram[57344])
+            print("RAM <sp-1>", dut.memory.ram[57343])
+            print("RAM <sp-2>", dut.memory.ram[57342])
+            print("RAM <sp-3>", dut.memory.ram[57341])
+            print("RAM <pp>", dut.memory.ram[49152])
+            print("RAM <pp-1>", dut.memory.ram[49151])
+            print("RAM <ffff>", dut.memory.ram[65535])
+            print("RAM <fffd>", dut.memory.ram[65533])
+            print("RAM <fffb>", dut.memory.ram[65531])
+            print("---> pc", pc, ":", data.split("\n")[pc])
 
         cycles += 1
     # print("prog over ----------")
@@ -114,6 +119,8 @@ def run_test(dut):
             ret = yield run_file(dut, "./tmp/tmp.dat")
             rets.append(str(ret))
         except:
+            import traceback
+            traceback.print_exc()
             rets.append("FAIL")
 
     with open("../../temp_results.txt", "w") as f:

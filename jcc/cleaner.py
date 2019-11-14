@@ -15,18 +15,20 @@ def clean(assembly_data):
     start_values = {
         "SP": 0xE000,
         "BP": 0xE000,
-        "RA": 0x0000,
-        "T0": 0x0000,
-        "T1": 0x0000
+        "PP": 0xC000#,
+        # "RA": 0x0000,
+        # "T0": 0x0000,
+        # "T1": 0x0000
         }
 
     # add blank line
-    temp_data = "BUC $1\n"
+    temp_data = ""
+    # temp_data = "BUC $1\n"
 
     # get rid of later
-    bits = Bits(uint=start_values["SP"], length=16)
-    temp_data += "LUI $0x{}, %{}\n".format(bits[:8].hex, "SP")
-    temp_data += "ADDUI $0x{}, %{}\n".format(bits[8:].hex, "SP")
+    # bits = Bits(uint=start_values["SP"], length=16)
+    # temp_data += "LUI $0x{}, %{}\n".format(bits[:8].hex, "SP")
+    # temp_data += "ADDUI $0x{}, %{}\n".format(bits[8:].hex, "SP")
 
     # add reg stating values
     # temp_data = ""
@@ -62,7 +64,17 @@ def clean(assembly_data):
     # pass for pseudo commands
     temp_data = ""
     for line in assembly_data.split("\n"):
-        if line.startswith("PUSH"):
+        if line.startswith("PUSHPP"):
+            temp_data += "STOR" + line[6:] + ", %PP\n"
+            temp_data += "SUBI $1, %PP\n"
+            # temp_data += "STOR %RA, %SP\n"
+            # temp_data += "SUBI 2, %SP"
+        elif line.startswith("POPPP"):
+            temp_data += "ADDI $1, %PP\n"
+            temp_data += "LOAD" + line[5:] + ", %PP\n"
+            # temp_data += "LOAD %RA, %SP\n"
+            # temp_data += "ADDI 2, %SP"
+        elif line.startswith("PUSH"):
             temp_data += "STOR" + line[4:] + ", %SP\n"
             temp_data += "SUBI $1, %SP\n"
             # temp_data += "STOR %RA, %SP\n"

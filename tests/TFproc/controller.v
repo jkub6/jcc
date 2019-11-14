@@ -307,20 +307,22 @@ begin
 				4'b1101: begin		// MOVI
 					nextState  = 'd20;
 				end
-				4'b0110: begin // ADDLI  or ADDUI
-					nextState = 'd5;
-					//muxAin = 'd1;
-					//muxBin = 'd1;
-					//outRegEn = 1;
-					//muxOut = 'd1;
-					//muxExtImm = 'd2;
-					//snextState = 'd3;
+				4'b0110: begin 	// ADDLUI
+					nextState = 'd23;
 				end
-				
 				default: begin		// immediate arithmetic
 					nextState = 'd5;
 				end
 			endcase
+		end
+		'd23: begin // ADDLI  or ADDUI
+			muxAin = 'd1;
+			muxBin = 'd1;
+			outRegEn = 1;
+			muxOut = 'd1;
+			aluOp = 'd3;
+			muxExtImm = 'd2;
+			nextState = 'd3;
 		end
 		default: nextState = 'd0;
 	endcase

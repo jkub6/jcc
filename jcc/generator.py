@@ -119,24 +119,34 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
     def visit_Assignment(self, node):  # Assignment: [op, lvalue*, rvalue*]
         """Call on each Assignment visit."""
-        try:
-            if node.op == "=":
+        if node.op == "=":
+            print(node.lvalue)
+            print(type(node.lvalue))
+            if (isinstance(node.lvalue, pycparser.c_ast.UnaryOp) and
+               node.lvalue.op == "*"):
+                print("oi", node.rvalue, node.lvalue)
+                self.pvisit(node.rvalue, node)
+                self.instr("PUSHPP %RA")
+                self.pvisit(node.lvalue.expr, node)
+                # self.instr("MOV %T0, %RA")
+
+                self.instr("POPP %T0")
+                self.instr("STOR %T0, %RA")
+            else:
                 # TODO visit left node instead of just taking name
                 # if isinstance(node.lvalue, type): # check if lvalue is a var
                 self.pvisit(node.rvalue, node)
                 self._assignment(node.lvalue.name, node)
-            else:
-                raise NotImplementedError()
-        except Exception:
-            self.error("Could not assign to", node)
+        else:
+            raise NotImplementedError()
 
     def visit_BinaryOp(self, node):  # BinaryOp: [op, left*, right*]
         """Call on each BinaryOp visit."""
         self.pvisit(node.left, node)
-        self.instr("PUSH %RA")
+        self.instr("PUSHPP %RA")
         self.endl()
         self.pvisit(node.right, node)
-        self.instr("POP %T0")
+        self.instr("POPPP %T0")
         self.endl()
         if node.op == "+":
             self.instr("ADD %T0, %RA", "+")
@@ -665,6 +675,9 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
         self.instr("LUI $0x{}, %{}".format(bits[:8].hex, reg))
         self.instr("ADDUI $0x{}, %{}".format(bits[8:].hex, reg))
+
+    def _push(self, register):
+        """Push the given register onto the stack."""
 
     def generate(self, ast, readability):
         """Wrap visit and return result."""
