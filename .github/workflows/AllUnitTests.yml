@@ -22,5 +22,4 @@ jobs:
         sudo apt-get install iverilog
     - name: Test with pytest
       run: |
-        pip install pytest
-        pytest
+        pipenv run pytest
