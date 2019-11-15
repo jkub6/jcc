@@ -15,12 +15,11 @@ jobs:
         python-version: 3.7
     - name: Install dependencies
       run: |
+        sudo apt-get install iverilog
         python -m pip install --upgrade pip
         pip install pipenv
         pipenv install
         pipenv install --dev
-        sudo apt-get install iverilog
-        iverilog
     - name: Test with pytest
       run: |
         pipenv run pytest
