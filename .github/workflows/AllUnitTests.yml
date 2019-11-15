@@ -17,6 +17,8 @@ jobs:
       run: |
         sudo apt-get install iverilog
         python -m pip install --upgrade pip
+        pip install cocotb-test
+        sudo pip install cocotb-test
         pip install pipenv
         pipenv install
         pipenv install --dev
