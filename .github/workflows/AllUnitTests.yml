@@ -1,4 +1,4 @@
-name: Python application
+name: All Unit Tests
 
 on: [push]
 
