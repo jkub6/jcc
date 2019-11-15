@@ -19,7 +19,7 @@ jobs:
         pip install pipenv
         pipenv install
         pipenv install --dev
-        apt-get install iverilog
+        sudo apt-get install iverilog
     - name: Test with pytest
       run: |
         pip install pytest
