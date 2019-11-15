@@ -46,10 +46,10 @@ skips += ["9fun_in_expr", "9hello_world", "9later_decl",
           "9rename_function_param", "9mutual_recursion"]
 skips += ["10forward_declaration",
           "10global_not_initialized"]
-skips += ["11both_2", "11both", "11dereference", "11basic_array"]
+skips += ["11both", "11dereference", "11basic_array"]
 skips += ["11write_mem", "11address"]
 # stages = [i+6 for i in range(1)]
-stages = [i+9 for i in range(1)]
+stages = [i+13 for i in range(1)]
 parameters = []
 files = []
 ids = []

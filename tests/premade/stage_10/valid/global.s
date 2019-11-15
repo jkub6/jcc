@@ -12,10 +12,10 @@ main:
     ADDUI $0x01, %T1
     SUB %T1, %T0
     LOAD %RA, %T0
-    PUSH %RA
+    TPSH %RA
     LUI $0x00, %RA
     ADDUI $0x03, %RA
-    POP %T0
+    TPP %T0
     ADD %T0, %RA
     JUC @main._cleanup
     MOVI $0, %RA

@@ -8,22 +8,22 @@ sub_3:
     ADDUI $0x05, %T1
     ADD %T1, %T0
     LOAD %RA, %T0
-    PUSH %RA
+    TPSH %RA
     MOV %BP, %T0
     LUI $0x00, %T1
     ADDUI $0x04, %T1
     ADD %T1, %T0
     LOAD %RA, %T0
-    POP %T0
+    TPP %T0
     SUB %RA, %T0
     MOV %T0, %RA
-    PUSH %RA
+    TPSH %RA
     MOV %BP, %T0
     LUI $0x00, %T1
     ADDUI $0x03, %T1
     ADD %T1, %T0
     LOAD %RA, %T0
-    POP %T0
+    TPP %T0
     SUB %RA, %T0
     MOV %T0, %RA
     JUC @sub_3._cleanup

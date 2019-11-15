@@ -2,10 +2,10 @@
 main:
     LUI $0x00, %RA
     ADDUI $0x01, %RA
-    PUSH %RA
+    TPSH %RA
     LUI $0x00, %RA
     ADDUI $0x00, %RA
-    POP %T0
+    TPP %T0
     CMPI $0, %T0
     BEQ $3
     MOVI $1, %T1
@@ -15,10 +15,10 @@ main:
     BEQ $2
     MOVI $1, %T1
     MOV %T1, %RA
-    PUSH %RA
+    TPSH %RA
     LUI $0x00, %RA
     ADDUI $0x00, %RA
-    POP %T0
+    TPP %T0
     CMPI $0, %T0
     BEQ $3
     MOVI $1, %T1

@@ -2,13 +2,13 @@
 main:
     LUI $0x00, %RA
     ADDUI $0x01, %RA
-    PUSH %RA
+    TPSH %RA
     LUI $0x00, %RA
     ADDUI $0x01, %RA
     MOVI $0, %T0
     SUB %RA, %T0
     MOV %T0, %RA
-    POP %T0
+    TPP %T0
     CMPI $0, %T0
     BEQ $3
     MOVI $1, %T1

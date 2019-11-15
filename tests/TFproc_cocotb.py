@@ -66,7 +66,7 @@ def run_file(dut, filepath):
     cycles = 0
     last_pc = 0
     pcs_in_row = 0
-    while pcs_in_row < 10 and (cycles < 5000):
+    while pcs_in_row < 10:  # and (cycles < 5000):
         yield clkedge
 
         pc = dut.proc.dp.progcount.count.value.integer
@@ -75,27 +75,28 @@ def run_file(dut, filepath):
         else:
             pcs_in_row = 0
             last_pc = pc
-            print("RA", dut.proc.dp.regFile.RAM[0])
-            print("T0", dut.proc.dp.regFile.RAM[1])
-            print("T1", dut.proc.dp.regFile.RAM[2])
-            print("SP", dut.proc.dp.regFile.RAM[15])
-            print("BP", dut.proc.dp.regFile.RAM[14])
-            print("PP", dut.proc.dp.regFile.RAM[13])
-            print("RAM <sp>", dut.memory.ram[57344])
-            print("RAM <sp-1>", dut.memory.ram[57343])
-            print("RAM <sp-2>", dut.memory.ram[57342])
-            print("RAM <sp-3>", dut.memory.ram[57341])
-            print("RAM <pp>", dut.memory.ram[49152])
-            print("RAM <pp-1>", dut.memory.ram[49151])
-            print("RAM <ffff>", dut.memory.ram[65535])
-            print("RAM <fffd>", dut.memory.ram[65533])
-            print("RAM <fffb>", dut.memory.ram[65531])
-            print("---> pc", pc, ":", data.split("\n")[pc])
+            # print("RA", dut.proc.dp.regFile.RAM[0])
+            # print("T0", dut.proc.dp.regFile.RAM[1])
+            # print("T1", dut.proc.dp.regFile.RAM[2])
+            # print("SP", dut.proc.dp.regFile.RAM[15])
+            # print("BP", dut.proc.dp.regFile.RAM[14])
+            # print("PP", dut.proc.dp.regFile.RAM[13])
+            # print("RAM <sp>", dut.memory.ram[57344])
+            # print("RAM <sp-1>", dut.memory.ram[57343])
+            # print("RAM <sp-2>", dut.memory.ram[57342])
+            # print("RAM <sp-3>", dut.memory.ram[57341])
+            # print("RAM <pp>", dut.memory.ram[49152])
+            # print("RAM <pp-1>", dut.memory.ram[49151])
+            # print("RAM <ffff>", dut.memory.ram[65535])
+            # print("RAM <fffd>", dut.memory.ram[65533])
+            # print("RAM <fffb>", dut.memory.ram[65531])
+            # print("---> pc", pc, ":", data.split("\n")[pc])
 
         cycles += 1
     # print("prog over ----------")
 
     cycles -= 10  # remove cycles from in loop
+    print("took {} / 1 = {} cycles to complete...".format(cycles-346, (cycles-346)/1))
 
     return dut.proc.dp.regFile.RAM[0].value.integer
 

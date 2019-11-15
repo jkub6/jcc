@@ -18,16 +18,24 @@ class ParseError(Exception):
 
 def remove_comments(text):
     """Remove comments from c text while keeping line numbers."""
-    def replacer(match):
-        s = match.group(0)
-        lines = s.count("\n")
-        out = "\n"*lines
-        return out
-    pattern = re.compile(
-        r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
-        re.DOTALL | re.MULTILINE
-    )
-    return re.sub(pattern, replacer, text)
+    done = ""
+    for line in text.split("\n"):
+        i = line.find("//")
+        if i >= 0:
+            done += line[:i] + "\n"
+        else:
+            done += line + "\n"
+    return done
+    #def replacer(match):
+    #    s = match.group(0)
+    #    lines = s.count("\n")
+    #    out = "\n"*lines
+    #    return out
+    #pattern = re.compile(
+    #    r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
+    #    re.DOTALL | re.MULTILINE
+    #)
+    #return re.sub(pattern, replacer, text)
 
 
 def parse(input_data, input_file_name, use_cpp=False):

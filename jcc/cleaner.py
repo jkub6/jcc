@@ -64,14 +64,14 @@ def clean(assembly_data):
     # pass for pseudo commands
     temp_data = ""
     for line in assembly_data.split("\n"):
-        if line.startswith("PUSHPP"):
-            temp_data += "STOR" + line[6:] + ", %PP\n"
+        if line.startswith("TPSH"):
+            temp_data += "STOR" + line[4:] + ", %PP\n"
             temp_data += "SUBI $1, %PP\n"
             # temp_data += "STOR %RA, %SP\n"
             # temp_data += "SUBI 2, %SP"
-        elif line.startswith("POPPP"):
+        elif line.startswith("TPP"):
             temp_data += "ADDI $1, %PP\n"
-            temp_data += "LOAD" + line[5:] + ", %PP\n"
+            temp_data += "LOAD" + line[3:] + ", %PP\n"
             # temp_data += "LOAD %RA, %SP\n"
             # temp_data += "ADDI 2, %SP"
         elif line.startswith("PUSH"):

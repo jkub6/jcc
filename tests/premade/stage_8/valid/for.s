@@ -20,10 +20,10 @@ main:
     ADDUI $0x01, %T1
     SUB %T1, %T0
     LOAD %RA, %T0
-    PUSH %RA
+    TPSH %RA
     LUI $0x00, %RA
     ADDUI $0x03, %RA
-    POP %T0
+    TPP %T0
     CMP %T0, %RA
     BLT $3
     MOVI $0, %RA
@@ -36,10 +36,10 @@ main:
     ADDUI $0x01, %T1
     SUB %T1, %T0
     LOAD %RA, %T0
-    PUSH %RA
+    TPSH %RA
     LUI $0x00, %RA
     ADDUI $0x02, %RA
-    POP %T0
+    TPP %T0
     MUL %T0, %RA
     MOV %BP, %T0
     LUI $0x00, %T1
@@ -51,10 +51,10 @@ main:
     ADDUI $0x01, %T1
     SUB %T1, %T0
     LOAD %RA, %T0
-    PUSH %RA
+    TPSH %RA
     LUI $0x00, %RA
     ADDUI $0x01, %RA
-    POP %T0
+    TPP %T0
     ADD %T0, %RA
     MOV %BP, %T0
     LUI $0x00, %T1

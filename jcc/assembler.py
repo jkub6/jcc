@@ -114,7 +114,10 @@ def assemble(assembly_data, zeros=True):
 
         cmd_str = elements[0]
 
-        if cmd_str in standard_commands:
+        if cmd_str == "NULL":
+            binary_data += "0000\n"
+
+        elif cmd_str in standard_commands:
             cmd = Bits(uint=standard_commands[cmd_str][0], length=4)
             cmd2 = Bits(uint=standard_commands[cmd_str][1], length=4)
             rsrc = Bits(uint=reg_map[elements[1]], length=4)

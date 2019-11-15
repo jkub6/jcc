@@ -158,7 +158,7 @@ def generate_binary_code(clean_data):
     """Generate binary code from assembly code."""
     vprint("[assembling to binary file]")
     binary_data = jcc.assembler.assemble(clean_data)
-    short_data = binary_data.strip("00\n")
+    short_data = binary_data.rstrip("0\n") + "00\n"
     vprint("[generated binary data begin]\n")
     diff = len(binary_data) - len(short_data)
     diff = int(diff/3)

@@ -120,18 +120,15 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
     def visit_Assignment(self, node):  # Assignment: [op, lvalue*, rvalue*]
         """Call on each Assignment visit."""
         if node.op == "=":
-            print(node.lvalue)
-            print(type(node.lvalue))
             if isinstance(node.lvalue, pycparser.c_ast.UnaryOp):
                 if node.lvalue.op != "*":
                     self.error("bad left hand of assignment", node)
-                print("oi", node.rvalue, node.lvalue)
                 self.pvisit(node.rvalue, node)
-                self.instr("PUSHPP %RA")
+                self.instr("TPSH %RA")
                 self.pvisit(node.lvalue.expr, node)
                 # self.instr("MOV %T0, %RA")
 
-                self.instr("POPP %T0")
+                self.instr("TPP %T0")
                 self.instr("STOR %T0, %RA")
             else:
                 # TODO visit left node instead of just taking name
@@ -144,10 +141,10 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
     def visit_BinaryOp(self, node):  # BinaryOp: [op, left*, right*]
         """Call on each BinaryOp visit."""
         self.pvisit(node.left, node)
-        self.instr("PUSHPP %RA")
+        self.instr("TPSH %RA")
         self.endl()
         self.pvisit(node.right, node)
-        self.instr("POPPP %T0")
+        self.instr("TPP %T0")
         self.endl()
         if node.op == "+":
             self.instr("ADD %T0, %RA", "+")
@@ -381,6 +378,12 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         if node.args is not None:
             argc = len(node.args.exprs)
 
+        # special built in asm function
+        if name == "asm":
+            instr = node.args.exprs[0].value.strip("'\"")
+            self.instr(instr, "asm")
+            return
+
         if (name, argc) not in self.function_decs:
             self.error("Error, Function has not been defined: "
                        + name, node)
@@ -488,7 +491,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         """Call on each ID visit."""
         dist = self.get_variable_location(node.name, node)
         if dist is None:
-            self.error(node.name + " not found in scope", node)
+            self.error("Var not found in scope/not a var", node)
         self.instr("MOV %BP, %T0", "load " + node.name)
         if dist >= 0:
             self._constant(dist, "T1", unsigned=False)
@@ -655,7 +658,7 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
         """Assign value to variable."""
         dist = self.get_variable_location(name, node)
         if dist is None:
-            self.error(node.name + " not found in scope", node)
+            self.error("Var not found in scope/not a var", node)
         self.instr("MOV %BP, %T0", "store " + name)
         self._constant(dist, "T1", unsigned=False)
         self.instr("SUB %T1, %T0")  # todo make sub u

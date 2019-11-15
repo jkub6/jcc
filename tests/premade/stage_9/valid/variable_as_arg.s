@@ -8,10 +8,10 @@ foo:
     ADDUI $0x03, %T1
     ADD %T1, %T0
     LOAD %RA, %T0
-    PUSH %RA
+    TPSH %RA
     LUI $0x00, %RA
     ADDUI $0x01, %RA
-    POP %T0
+    TPP %T0
     ADD %T0, %RA
     JUC @foo._cleanup
 foo._cleanup:
