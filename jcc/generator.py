@@ -339,12 +339,12 @@ class AssemblyGenerator(pycparser.c_ast.NodeVisitor):
 
         for c in function_defs:
             self.pvisit(c, node)
-        
+
         # assure all funcs deffined
         for func in self.function_decs:
             if func not in self.function_defs:
-                self.error("function declared but not deffined:"+str(func), node)
-
+                self.error("function declared but not deffined:" + str(func),
+                           node)
 
     def visit_For(self, node):  # For: [init*, cond*, next*, stmt*]
         """Call on each For visit."""

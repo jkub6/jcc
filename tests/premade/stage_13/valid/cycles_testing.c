@@ -3,7 +3,7 @@
 int main()
 {
     //waitMilis(1);
-    //wait16Cycles(7);
+    wait16Cycles(7);
     wait60Cycles();
-    //waitCycles(200);
+    wait16Cycles(200);
 }

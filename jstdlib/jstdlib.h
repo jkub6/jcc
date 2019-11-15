@@ -38,7 +38,7 @@ int getGlyph(int x, int y)
 }
 
 
-int wait60Cycles() { }  // function call takes 60 cycles
+int wait60Cycles() { }  // empty function call takes 60 cycles
 
 
 int wait16Cycles(int times)  // busywork for waiting cycles

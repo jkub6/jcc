@@ -162,8 +162,14 @@ def generate_binary_code(clean_data):
     vprint("[generated binary data begin]\n")
     diff = len(binary_data) - len(short_data)
     diff = int(diff/3)
-    vprint(short_data + "\n(" + str(diff) + " blank lines truncated)...")
+    vprint(short_data + "+ {} blank lines...\n".format(diff))
+
     vprint("[generated binary data end]")
+
+    lines = short_data.count("\n")
+    vprint("[{} bytes of code]".format(lines * 2))
+    vprint("[0x0000 - 0x{:04x} ({} code lines)]\n".format(lines-1, lines))
+
     return binary_data
 
 
