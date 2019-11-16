@@ -76,11 +76,22 @@ int waitMilis(int milis)  // busywork for waiting miliseconds
     asm("BUC $-3");
     asm("BUC $-9");
 
-    // make noloop overhead 1 ms
+    // make no loop overhead 1 ms
     asm("LUI $12, $T0");
     asm("ADDUI $45, $T0");
     asm("CMPI $0, $T0");
     asm("BEQ $3");
     asm("ADDI $-1, %T0");
     asm("BUC $-3");
+}
+
+
+int waitSecs(int secs)  // too long to test with simulator
+{
+    for (int i = 0; i < secs; i = i + 1)
+    {
+        // wait 1 second - 56 cycles (approximate for loop overhead)
+        waitMilis(999);
+        wait16Cycles(309);
+    }
 }
