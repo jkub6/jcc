@@ -37,6 +37,21 @@ int getGlyph(int x, int y)
     return *address;
 }
 
+int getMemValue()
+{
+    asm("LUI $0xff, %T0");
+    asm("ADDUI $0x6d, %T0");
+    asm("LOAD %RA, %T0");
+}
+
+int setMemValue(int input)
+{
+    //*(addrstore + i)
+    asm("LUI %T0, $input");
+    asm("ADDUI %T0, $input");
+    asm("LOAD %RA, %T0");
+}
+
 
 int wait60Cycles() { }  // empty function call takes 60 cycles
 
@@ -50,7 +65,7 @@ int wait16Cycles(int times)  // busywork for waiting cycles
     asm("ADDI $-7, %RA");
 
     // loop with overhead of 16 cycles
-    asm("CMPI $0, $RA");
+    asm("CMPI $0, %RA");
     asm("BEQ $3");
     asm("ADDI $-1, %RA");
     asm("BUC $-3");
@@ -65,21 +80,21 @@ int waitMilis(int milis)  // busywork for waiting miliseconds
     asm("ADDI $-1, %RA");
 
     // loop with overhead of 1ms
-    asm("CMPI $0, $RA");
+    asm("CMPI $0, %RA");
     asm("BEQ $9");
     asm("ADDI $-1, %RA");
-    asm("LUI $12, $T0");
-    asm("ADDUI $50, $T0");
-    asm("CMPI $0, $T0");
+    asm("LUI $12, %T0");
+    asm("ADDUI $50, %T0");
+    asm("CMPI $0, %T0");
     asm("BEQ $3");
     asm("ADDI $-1, %T0");
     asm("BUC $-3");
     asm("BUC $-9");
 
     // make no loop overhead 1 ms
-    asm("LUI $12, $T0");
-    asm("ADDUI $45, $T0");
-    asm("CMPI $0, $T0");
+    asm("LUI $12, %T0");
+    asm("ADDUI $45, %T0");
+    asm("CMPI $0, %T0");
     asm("BEQ $3");
     asm("ADDI $-1, %T0");
     asm("BUC $-3");
