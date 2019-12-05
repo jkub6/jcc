@@ -49,7 +49,7 @@ int setMemValue(int input)
     //*(addrstore + i)
     asm("LUI %T0, $input");
     asm("ADDUI %T0, $input");
-    asm("LOAD %RA, %T0");
+    asm("STORE %T0, %RAX");
 }
 
 
