@@ -68,7 +68,7 @@ def parse_args(run_with_args=None):
     argparser.add_argument('-r', '--readability', required=False, type=int,
                            choices=range(0, 4), metavar="[0-3]",
                            help="level (0-3) of assembly code readability \
-                                comments, spacing, etc...", default=0)
+                                comments, spacing, etc... (default: 3)", default=3)
 
     argparser.add_argument("-v", "--verbose", action="store_true",
                            help="enable verbose output")
