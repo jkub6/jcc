@@ -6,6 +6,8 @@ Development requirments: icarus-verilog
 
 [JCC Dcumentation](https://jkub6.github.io/jcc) (todo)
 
+Designed to compile from the C language into a custom (CR16-ish) ISA
+
 Compiles from the C language into assembly, and can then assemble to a binary file.
 
 [ISA for produced assembly](https://utah.instructure.com/files/92486303/download?download_frd=1)
